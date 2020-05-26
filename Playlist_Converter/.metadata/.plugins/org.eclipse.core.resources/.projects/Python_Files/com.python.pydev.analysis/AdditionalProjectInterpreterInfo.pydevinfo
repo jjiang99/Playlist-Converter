@@ -1,0 +1,25 @@
+-- VERSION_5
+-- START DISKCACHE_2
+C:\Users\justi\Playlist_Converter\.metadata\.plugins\org.eclipse.core.resources\.projects\Python_Files\com.python.pydev.analysis\v2_indexcache
+asdasdas|1590514403694689000|C:\Users\justi\PCTEST\asdasdasd\asdasdas.py
+-- END DISKCACHE
+-- START DICTIONARY
+4
+3=Song
+4=Song.__init__
+2=asdasdas
+1=C:\Users\justi\PCTEST\asdasdasd\asdasdas.py
+-- END DICTIONARY
+-- START TREE 1
+3
+aut|1|authenticateUser!1^18#5*18@
+mai|1|main!1^26#5*18@
+son|1|Song!1^11#7*17@
+-- END TREE
+-- START TREE 2
+4
+__i|1|__init__!3&1^12#9*18@
+alb|1|album!4&1^15#9*19@
+art|1|artist!4&1^14#9*19@
+nam|1|name!4&1^13#9*19@
+-- END TREE

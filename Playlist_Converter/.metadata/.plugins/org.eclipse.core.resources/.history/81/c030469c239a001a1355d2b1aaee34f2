@@ -1,0 +1,46 @@
+import java.util.ArrayList;
+
+public class Song {
+	String name;
+	String artist;
+	String album;
+	ArrayList<String> features;
+
+//	public Song(String name) {
+//		this.name = name;
+//		this.features = new ArrayList<String>();
+//	}
+
+	public Song(String name, String artist) {
+		this.name = name;
+		this.artist = new String (artist);
+		this.features = new ArrayList<String>();
+	}
+
+	public Song(String name, String artist, String album) {
+		this.name = name;
+		this.artist = new String (artist);
+		this.album = album;
+	}
+
+	public String getAlbum() {
+		return album;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getArtist() {
+		return artist;
+	}
+
+	public ArrayList<String> getFeatures() {
+		return features;
+	}
+	
+	public String toString() {
+		return "Name: " + name + "\t\tArtist: " + artist + "\t\tAlbum: " + album;
+	}
+	
+}

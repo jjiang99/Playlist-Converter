@@ -1,0 +1,192 @@
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Converter {
+	static ArrayList<Song> songs = new ArrayList<Song>();
+
+	public static void getSongs(URL url) throws IOException {
+		InputStream is = url.openStream();
+		int ptr = 0;
+		StringBuffer buffer1 = new StringBuffer();
+		while ((ptr = is.read()) != -1) {
+			buffer1.append((char) ptr);
+		}
+		String buffer = buffer1.toString();
+		String bufferCopy = buffer;
+
+		String titleSearch = "\",\"popularity\":";
+		String nameSearch = "\"name\":\"";
+		String artistSearch = "\",\"type\":\"artist\"";
+		String albumSearch = "\"type\":\"album\"";
+		int numSongs = 0;
+		// System.out.println(buffer);
+
+		ArrayList<String> songNames = new ArrayList<String>();
+		ArrayList<String> artistNames = new ArrayList<String>();
+		ArrayList<String> albumNames = new ArrayList<String>();
+
+		while (bufferCopy.indexOf(titleSearch) != -1) {
+			int titleIndex = bufferCopy.indexOf(titleSearch);
+
+			String tempBuffer = bufferCopy.substring(titleIndex - 300);
+			String title = tempBuffer.split(titleSearch)[0].split(nameSearch)[1].split("\"")[0];
+			// System.out.println("Title: " + title);
+			songNames.add(title);
+			bufferCopy = bufferCopy.substring(titleIndex + 1);
+		}
+
+		// System.out.println();
+		bufferCopy = buffer;
+
+		while (bufferCopy.indexOf(albumSearch) != -1) {
+			int albumIndex = bufferCopy.indexOf(albumSearch);
+
+			String tempBuffer = bufferCopy.substring(albumIndex - 300);
+			String album = tempBuffer.split(albumSearch)[0].split(nameSearch)[1].split("\"")[0];
+			// System.out.println("Album: " + album);
+			albumNames.add(album);
+			bufferCopy = bufferCopy.substring(albumIndex + 1);
+			numSongs++;
+		}
+
+		// System.out.println();
+		bufferCopy = buffer;
+
+		while (bufferCopy.indexOf(albumSearch) != -1) {
+			int artistIndex = bufferCopy.indexOf(albumSearch);
+
+			String tempBuffer = bufferCopy.substring(artistIndex - 50);
+			String artist = tempBuffer.split(artistSearch)[0].split(nameSearch)[1];
+			// System.out.println("Artist: " + artist);
+			artistNames.add(artist);
+			bufferCopy = bufferCopy.substring(artistIndex + 1);
+		}
+
+		for (int i = 0; i < numSongs; i++) {
+//			System.out.println(songNames.get(i));
+//			System.out.println(artistNames.get(i));
+//			System.out.println(albumNames.get(i));
+			songs.add(new Song(songNames.get(i), artistNames.get(i), albumNames.get(i)));
+		}
+	}
+
+	public static void printSongs() {
+		for (Song s : songs) {
+			System.out.println(s.toString());
+		}
+	}
+
+	public static String getParamsString(Map<String, String> params) throws UnsupportedEncodingException {
+		StringBuilder result = new StringBuilder();
+
+		for (Map.Entry<String, String> entry : params.entrySet()) {
+			result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+			result.append("=");
+			result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+			result.append("&");
+		}
+
+		String resultString = result.toString();
+		return resultString.length() > 0 ? resultString.substring(0, resultString.length() - 1) : resultString;
+	}
+	
+	public static String getAuthToken() throws IOException {
+		String testurl = "https://accounts.spotify.com/authorize";
+		String callbackurl = "https://www.getpostman.com/oauth2/callback";
+		String clientID = "1f70624ac6c84c93a95998e8d1f5ba98";
+		String clientSecret = "66194225c1e6478eb181fe569215059d";
+
+		URL url = new URL(testurl);
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.setRequestMethod("GET");
+		con.setRequestProperty("Content-Type", "application/json");
+		
+		
+		
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("q", "summer%20keshi");
+		parameters.put("type", "track");
+
+		con.setDoOutput(true);
+		DataOutputStream out = new DataOutputStream(con.getOutputStream());
+		out.writeBytes(getParamsString(parameters));
+		out.flush();
+		out.close();
+
+		// System.out.println("TEST URL: " + testurl);
+
+		int status = con.getResponseCode();
+		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer content = new StringBuffer();
+		while ((inputLine = in.readLine()) != null) {
+			content.append(inputLine);
+		}
+		in.close();
+		con.disconnect();
+
+		System.out.println(content);
+		return null;
+	}
+
+	public static void main(String[] args) throws IOException {
+		// URL url = new
+		// URL("https://open.spotify.com/playlist/0MMPezm4ZGpLDVxXVtvPnT");
+		// URL url = new
+		// URL("https://open.spotify.com/playlist/1GkR7O3ziHXGibWfQJI2Dn?si=TTdj_pQTTBC1V1vMwa-MQw");
+		// getSongs(url);
+		
+		//System.out.println(getAuthToken());
+		
+		String auth = "BQBPyTSfbX2mwiVKauuhBPzYzqt_k_euP3-tMlqkcpiPgdbOXAyMg-putapXqNtrdNDhkrDhbqCL5CMKf_kIiiPlDVoQFZLLYRpECV8ci7boUreHWuz7MqcrR99EO3I9lgiuLhqn9Vx1Fst5NTJZRhMir-vvXZaldng";
+
+		String testName = "summer"; // songs.get(0).getName();
+		String testArtist = "keshi"; // songs.get(0).getArtist();
+		// String testAlbum = songs.get(0).getAlbum();
+		//String testurl = "https://play.google.com/music/listen?u=0#/sr/" + testName + "+" + testArtist;
+		String testurl = "https://api.spotify.com/v1/search?q=summer%20keshi&type=track";
+
+		URL testURL = new URL(testurl);
+		HttpURLConnection con = (HttpURLConnection) testURL.openConnection();
+		con.setRequestProperty("Authorization", "Bearer " + auth);
+		con.setRequestMethod("GET");
+		con.setRequestProperty("Content-Type", "application/json");
+
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("q", "summer%20keshi");
+		parameters.put("type", "track");
+
+		con.setDoOutput(true);
+		DataOutputStream out = new DataOutputStream(con.getOutputStream());
+		out.writeBytes(getParamsString(parameters));
+		out.flush();
+		out.close();
+
+		// System.out.println("TEST URL: " + testurl);
+
+		int status = con.getResponseCode();
+		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer content = new StringBuffer();
+		while ((inputLine = in.readLine()) != null) {
+			content.append(inputLine);
+		}
+		in.close();
+		con.disconnect();
+
+		System.out.println(content);
+	}
+
+}

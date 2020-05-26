@@ -1,0 +1,33 @@
+'''
+Created on May 23, 2020
+
+@author: justi
+'''
+
+from gmusicapi import Musicmanager
+from gmusicapi.clients.mobileclient import Mobileclient
+
+
+
+def authenticateUser():
+    mm = Mobileclient()
+    mm.perform_oauth()
+#     mm.login(mm.perform_oauth())
+    print(mm._get_all_songs(True))
+
+
+
+credentials = "4/0AFNRiQ0ZZ6O79xHX0AH_O-KO-CPi9mKgSKTdMtkuj7UyJd7OnAXlbM"
+
+def main():
+    print("python main function")
+#     authenticateUser()
+    mm = Mobileclient()
+#     mm.perform_oauth("C:\\Users\\justi\\Playlist Converter\\Playlist Converter\\creds.txt", True)
+    mm.oauth_login(Mobileclient.FROM_MAC_ADDRESS, "C:\\Users\\justi\\Playlist Converter\\Playlist Converter\\creds.txt", "en_US")
+    
+    lib = mm.get_all_songs(True, False, False)
+    
+
+if __name__ == '__main__':
+    main()
