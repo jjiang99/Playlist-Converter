@@ -416,9 +416,35 @@ public class SpotifyConverter {
 		// System.out.println(createPlaylist());
 		// System.out.println(findSong("Saturday Sun", "Vance Joy"));
 		// addSong();
-		copyPlaylist("7xAQ6VoGM9pd5HHEccRGKP");
+//		copyPlaylist("7xAQ6VoGM9pd5HHEccRGKP");
 		// getSongsSpotify("7xAQ6VoGM9pd5HHEccRGKP");
 //		searchSong("Jackie Chan", "Tiësto");
+		
+		String s = null;
+//		Process p1 = Runtime.getRuntime().exec("cd 'Playlist Converter'");
+		String path = "Python_Test\\GooglePlayConverter.py";
+		Process p = Runtime.getRuntime().exec("python " + path);
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+		// read the output from the command
+		System.out.println("Here is the standard output of the command:\n");
+		while ((s = stdInput.readLine()) != null) {
+			System.out.println(s);
+			String[] songInfo = s.split(", ");
+			songs.add(new Song(songInfo[0], songInfo[1]));
+		}
+		
+		for (Song song : songs) {
+			System.out.println(song.toString());
+		}
+
+		// read any errors from the attempted command
+		System.out.println("Here is the standard error of the command (if any):\n");
+		while ((s = stdError.readLine()) != null) {
+			//System.out.println(s);
+		}
 	}
 
 }

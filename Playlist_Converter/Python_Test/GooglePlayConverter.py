@@ -22,31 +22,31 @@ def authenticateUser():
     print(mm._get_all_songs(True))
 
 
-
+# hello world asdasd
 def main():
-#     print("python main function")
-#     authenticateUser()
     mm = Mobileclient()
-#     mm.perform_oauth("C:\\Users\\justi\\Playlist Converter\\Python Test\\creds.txt", True)
-    mm.oauth_login(Mobileclient.FROM_MAC_ADDRESS, "C:\\Users\\justi\\Playlist Converter\\Python Test\\creds.txt", "en_US")
+#     mm.perform_oauth("credentials.txt", True)
+
+#    put in your local path to where the 'creds.txt' document is
+    mm.oauth_login(Mobileclient.FROM_MAC_ADDRESS, "C:\\Users\\justi\\Documents\\GitHub\\Project\\Playlist-Converter\\Playlist_Converter\\Python_Test\\creds.txt", "en_US")
     
 #     lib = mm.get_all_songs()
     lib = mm.get_all_playlists()
-#     print(lib.__next__())
+    
     for playlist in lib:
         if playlist['name'] == "Temp":
             targetPlaylist = mm.get_shared_playlist_contents(playlist['shareToken'])
-            
-    
+             
+     
     songs = []
     for track in targetPlaylist:
 #         print(track['track']['artist'])
         songs.append(Song(track['track']['title'], track['track']['artist'], track['track']['album']))
-        
-    
+         
+     
     for song in songs:
-        print(song.name)
-        
+        print(song.name + ", " + song.artist)
+         
     
 
 if __name__ == '__main__':

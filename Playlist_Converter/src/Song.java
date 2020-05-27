@@ -3,6 +3,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class Song {
 	String name;
 	String artist;
@@ -14,7 +17,13 @@ public class Song {
 //		this.name = name;
 //		this.features = new ArrayList<String>();
 //	}
-
+	
+	public Song(String name, String artist) {
+		this.name = name;
+		this.artist = new String(artist);
+		this.features = new ArrayList<String>();
+	}
+	
 	public Song(String name, String artist, String uri) {
 		this.name = name;
 		this.artist = new String(artist);
@@ -56,26 +65,10 @@ public class Song {
 //					+ "printHello()\n"
 //					+ "printHello()");
 //		}
-		String s = null;
-//		Process p1 = Runtime.getRuntime().exec("cd 'Playlist Converter'");
-		String path = "C:\\Users\\justi\\Playlist Converter\\Python Test\\GooglePlayConverter.py";
-		Process p = Runtime.getRuntime().exec("python " + path);
-		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-		// read the output from the command
-		System.out.println("Here is the standard output of the command:\n");
-		while ((s = stdInput.readLine()) != null) {
-			System.out.println(s);
-		}
-
-		// read any errors from the attempted command
-		System.out.println("Here is the standard error of the command (if any):\n");
-		while ((s = stdError.readLine()) != null) {
-			System.out.println(s);
-		}
-
+		
+		
+				
 //		PythonInterpreter interpreter = new PythonInterpreter();
 //		interpreter.exec("import sys");
 //		interpreter.exec("import sys\nsys.path.append('C:\\Users\\justi\\AppData\\Local\\Programs\\Python\\Python38-32\\Lib\\site-packages')");
