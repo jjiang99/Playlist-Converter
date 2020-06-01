@@ -3,6 +3,11 @@ Created on May 23, 2020
 
 @author: justi
 '''
+# import sys
+# import os
+# 
+# print (os.path.dirname(os.path.abspath(__file__)), __file__)
+
 
 from gmusicapi import Musicmanager
 from gmusicapi.clients.mobileclient import Mobileclient
@@ -14,23 +19,22 @@ class Song:
         self.artist = artist
         self.album = album
         
-
-def authenticateUser():
+    def printHello(self):
+        print("hello")
+    
+        
+    
+def authenticateUser(): # Only need to run this once on a given machine, credentials written in text file
     mm = Mobileclient()
     mm.perform_oauth()
-#     mm.login(mm.perform_oauth())
-    print(mm._get_all_songs(True))
 
-
-# hello world asdasd
-def main():
+def hello():
+    print("Hello World!")
+    
+def getAllSongs():
     mm = Mobileclient()
-#     mm.perform_oauth("credentials.txt", True)
-
-#    put in your local path to where the 'creds.txt' document is
     mm.oauth_login(Mobileclient.FROM_MAC_ADDRESS, "C:\\Users\\justi\\Documents\\GitHub\\Project\\Playlist-Converter\\Playlist_Converter\\Python_Test\\creds.txt", "en_US")
     
-#     lib = mm.get_all_songs()
     lib = mm.get_all_playlists()
     
     for playlist in lib:
@@ -46,8 +50,13 @@ def main():
      
     for song in songs:
         print(song.name + ", " + song.artist)
-         
+        
+    return "DONE"
+
+def main():
+    print("MAIN")
     
+#     getAllSongs()
 
 if __name__ == '__main__':
     main()

@@ -5,11 +5,11 @@ from spotipy import oauth2
 import spotipy.util as util
 
 PORT_NUMBER = 8080
-username = "repthecave"
-SPOTIPY_CLIENT_ID = '1269535013ee4729bdc1ef093b2cfb54'
-SPOTIPY_CLIENT_SECRET = '1d3342d16579456897fb6f11980a9a14'
+username = "li7jnekrsvk7c9a7508eic6rw"
+SPOTIPY_CLIENT_ID = '1f70624ac6c84c93a95998e8d1f5ba98'
+SPOTIPY_CLIENT_SECRET = '66194225c1e6478eb181fe569215059d'
 SPOTIPY_REDIRECT_URI = 'http://localhost:8080'
-SCOPE = 'user-library-read'
+SCOPE = 'playlist-modify-private'
 
 
 

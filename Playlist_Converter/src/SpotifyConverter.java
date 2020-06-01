@@ -14,7 +14,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class SpotifyConverter {
+public class SpotifyConverter extends Converter {
 	static ArrayList<Song> songs = new ArrayList<Song>();
 	static String playlistId;
 
@@ -24,76 +24,9 @@ public class SpotifyConverter {
 
 	private static Service sourceService;
 	private static Service destinationService;
-	static String auth = "BQDvG8Y47e31-rBTlzxFSRA9aGbBaoKS1p3fFy3YuJdHgU8XltSMLXOK3FG-MfLYx1a1ZcTE0foMQkuNQxrIvJKZAvt9svKafcaEfyDSnsSmak0T7nAxtxTXtDi1IT-eOl4yP2s6SJbYUhKeJT7mPp-UWJ-qx-ga0a-h0FXbI0W4osZU6sZ3SXQOd6GJD9yQby6kCg";
+	static String auth;
 
-	public static void getSongsSpotify1(URL url) throws IOException {
-		InputStream is = url.openStream();
-		int ptr = 0;
-		StringBuffer buffer1 = new StringBuffer();
-		while ((ptr = is.read()) != -1) {
-			buffer1.append((char) ptr);
-		}
-		String buffer = buffer1.toString();
-		String bufferCopy = buffer;
 
-		String titleSearch = "\",\"popularity\":";
-		String nameSearch = "\"name\":\"";
-		String artistSearch = "\",\"type\":\"artist\"";
-		String albumSearch = "\"type\":\"album\"";
-		int numSongs = 0;
-		// System.out.println(buffer);
-
-		ArrayList<String> songNames = new ArrayList<String>();
-		ArrayList<String> artistNames = new ArrayList<String>();
-		ArrayList<String> albumNames = new ArrayList<String>();
-
-		while (bufferCopy.indexOf(titleSearch) != -1) {
-			int titleIndex = bufferCopy.indexOf(titleSearch);
-
-			String tempBuffer = bufferCopy.substring(titleIndex - 300);
-			String title = tempBuffer.split(titleSearch)[0].split(nameSearch)[1].split("\"")[0];
-			// System.out.println("Title: " + title);
-			songNames.add(title);
-			bufferCopy = bufferCopy.substring(titleIndex + 1);
-		}
-
-		// System.out.println();
-		bufferCopy = buffer;
-
-		while (bufferCopy.indexOf(albumSearch) != -1) {
-			int albumIndex = bufferCopy.indexOf(albumSearch);
-
-			String tempBuffer = bufferCopy.substring(albumIndex - 300);
-			String album = tempBuffer.split(albumSearch)[0].split(nameSearch)[1].split("\"")[0];
-			// System.out.println("Album: " + album);
-			albumNames.add(album);
-			bufferCopy = bufferCopy.substring(albumIndex + 1);
-			numSongs++;
-		}
-
-		// System.out.println();
-		bufferCopy = buffer;
-
-		while (bufferCopy.indexOf(albumSearch) != -1) {
-			int artistIndex = bufferCopy.indexOf(albumSearch);
-
-			String tempBuffer = bufferCopy.substring(artistIndex - 50);
-			String artist = tempBuffer.split(artistSearch)[0].split(nameSearch)[1];
-			// System.out.println("Artist: " + artist);
-			artistNames.add(artist);
-			bufferCopy = bufferCopy.substring(artistIndex + 1);
-		}
-
-		for (int i = 0; i < numSongs; i++) {
-//			System.out.println(songNames.get(i));
-
-			byte[] defaultBytes = artistNames.get(i).getBytes();
-
-			System.out.println(new String(defaultBytes, "UTF8"));
-//			System.out.println(albumNames.get(i));
-			songs.add(new Song(songNames.get(i), artistNames.get(i), albumNames.get(i)));
-		}
-	}
 
 	private static void getSongsApple(String id) {
 		// TODO Auto-generated method stub
@@ -125,41 +58,25 @@ public class SpotifyConverter {
 		return resultString.length() > 0 ? resultString.substring(0, resultString.length() - 1) : resultString;
 	}
 
-	public static String getAuthToken() throws IOException {
-		String testurl = "https://accounts.spotify.com/authorize";
-//		String callbackurl = "https://www.getpostman.com/oauth2/callback";
-//		String clientID = "1f70624ac6c84c93a95998e8d1f5ba98";
-//		String clientSecret = "66194225c1e6478eb181fe569215059d";
+	public static void authenticate() throws IOException {
+		String s = null;
+		String path = "Python_Test\\authenticator.py";
+		Process p = Runtime.getRuntime().exec("python " + path);
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-		URL url = new URL(testurl);
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setRequestMethod("GET");
-		con.setRequestProperty("Content-Type", "application/json");
+		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
-		Map<String, String> parameters = new HashMap<>();
-		parameters.put("q", "summer%20keshi");
-		parameters.put("type", "track");
-
-		con.setDoOutput(true);
-		DataOutputStream out = new DataOutputStream(con.getOutputStream());
-		out.writeBytes(getParamsString(parameters));
-		out.flush();
-		out.close();
-
-		// System.out.println("TEST URL: " + testurl);
-
-//		int status = con.getResponseCode();
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer content = new StringBuffer();
-		while ((inputLine = in.readLine()) != null) {
-			content.append(inputLine);
+		// read the output from the command
+		//System.out.println("Here is the standard output of the command:\n");
+		while ((s = stdInput.readLine()) != null) {
+			auth = s;
 		}
-		in.close();
-		con.disconnect();
 
-		System.out.println(content);
-		return null;
+		// read any errors from the attempted command
+		//System.out.println("Here is the standard error of the command (if any):\n");
+		while ((s = stdError.readLine()) != null) {
+			System.out.println(s);
+		}
 	}
 
 	public static String searchSong(String title, String artist) throws IOException {
@@ -419,32 +336,34 @@ public class SpotifyConverter {
 //		copyPlaylist("7xAQ6VoGM9pd5HHEccRGKP");
 		// getSongsSpotify("7xAQ6VoGM9pd5HHEccRGKP");
 //		searchSong("Jackie Chan", "Tiësto");
+
 		
-		String s = null;
-//		Process p1 = Runtime.getRuntime().exec("cd 'Playlist Converter'");
-		String path = "Python_Test\\GooglePlayConverter.py";
-		Process p = Runtime.getRuntime().exec("python " + path);
-		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-		// read the output from the command
-		System.out.println("Here is the standard output of the command:\n");
-		while ((s = stdInput.readLine()) != null) {
-			System.out.println(s);
-			String[] songInfo = s.split(", ");
-			songs.add(new Song(songInfo[0], songInfo[1]));
-		}
-		
-		for (Song song : songs) {
-			System.out.println(song.toString());
-		}
-
-		// read any errors from the attempted command
-		System.out.println("Here is the standard error of the command (if any):\n");
-		while ((s = stdError.readLine()) != null) {
-			//System.out.println(s);
-		}
+		//authenticate();
+		copyPlaylist("7xAQ6VoGM9pd5HHEccRGKP");
+//		String s = null;
+//		String path = "Python_Test\\GooglePlayConverter.py";
+//		Process p = Runtime.getRuntime().exec("python " + path);
+//		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//
+//		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+//
+//		// read the output from the command
+//		System.out.println("Here is the standard output of the command:\n");
+//		while ((s = stdInput.readLine()) != null) {
+//			System.out.println(s);
+//			String[] songInfo = s.split(", ");
+//			songs.add(new Song(songInfo[0], songInfo[1]));
+//		}
+//		
+//		for (Song song : songs) {
+//			System.out.println(song.toString());
+//		}
+//
+//		// read any errors from the attempted command
+//		System.out.println("Here is the standard error of the command (if any):\n");
+//		while ((s = stdError.readLine()) != null) {
+//			//System.out.println(s);
+//		}
 	}
 
 }

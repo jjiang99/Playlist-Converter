@@ -56,41 +56,8 @@ public class Converter {
 		return resultString.length() > 0 ? resultString.substring(0, resultString.length() - 1) : resultString;
 	}
 
-	public static String getAuthToken() throws IOException {
-		String testurl = "https://accounts.spotify.com/authorize";
-//		String callbackurl = "https://www.getpostman.com/oauth2/callback";
-//		String clientID = "1f70624ac6c84c93a95998e8d1f5ba98";
-//		String clientSecret = "66194225c1e6478eb181fe569215059d";
+	public static void authenticate() throws IOException {
 
-		URL url = new URL(testurl);
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setRequestMethod("GET");
-		con.setRequestProperty("Content-Type", "application/json");
-
-		Map<String, String> parameters = new HashMap<>();
-		parameters.put("q", "summer%20keshi");
-		parameters.put("type", "track");
-
-		con.setDoOutput(true);
-		DataOutputStream out = new DataOutputStream(con.getOutputStream());
-		out.writeBytes(getParamsString(parameters));
-		out.flush();
-		out.close();
-
-		// System.out.println("TEST URL: " + testurl);
-
-//		int status = con.getResponseCode();
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer content = new StringBuffer();
-		while ((inputLine = in.readLine()) != null) {
-			content.append(inputLine);
-		}
-		in.close();
-		con.disconnect();
-
-		System.out.println(content);
-		return null;
 	}
 
 	public static String searchSong(String title, String artist) throws IOException {
