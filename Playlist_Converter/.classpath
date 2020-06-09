@@ -6,8 +6,12 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JFX">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/justi/Playlist_Converter/json-20190722.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="C:/Users/justi/Documents/GitHub/Project/Playlist-Converter/Playlist_Converter/jython2.7.2/jython.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

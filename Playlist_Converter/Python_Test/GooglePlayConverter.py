@@ -53,9 +53,35 @@ def getAllSongs():
         
     return "DONE"
 
+def createPlaylist():
+    mm = Mobileclient()
+    mm.oauth_login(Mobileclient.FROM_MAC_ADDRESS, "C:\\Users\\justi\\Documents\\GitHub\\Project\\Playlist-Converter\\Playlist_Converter\\Python_Test\\creds.txt", "en_US")
+    playlist = mm.create_playlist("added playlist", "", False)
+    print(playlist)
+    
+def searchSong(name, artist, album):
+    mm = Mobileclient()
+    mm.oauth_login(Mobileclient.FROM_MAC_ADDRESS, "C:\\Users\\justi\\Documents\\GitHub\\Project\\Playlist-Converter\\Playlist_Converter\\Python_Test\\creds.txt", "en_US")
+    query = str(name) + str(artist)
+    return mm.search(query)
+
+def addSong(name, artist, album):
+    mm = Mobileclient()
+    mm.oauth_login(Mobileclient.FROM_MAC_ADDRESS, "C:\\Users\\justi\\Documents\\GitHub\\Project\\Playlist-Converter\\Playlist_Converter\\Python_Test\\creds.txt", "en_US")
+#     mm.add_songs_to_playlist(playlist_id, song_ids)
+    
+    response = searchSong(name, artist, album)
+    print(str(response).encode("utf-8"))
+    for searchResult in response:
+#         if searchResult['title'].lower() == name.lower() & searchResult['artist'].lower() == artist.lower():
+            print("same")
+#             targetPlaylist = mm.get_shared_playlist_contents(playlist['shareToken'])
+    
 def main():
     print("MAIN")
-    
+#     createPlaylist()
+#     print(searchSong("hello", "adele", ""))
+    addSong("hello", "adele", "")
 #     getAllSongs()
 
 if __name__ == '__main__':
