@@ -1,16 +1,13 @@
 package converterCode;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -19,14 +16,30 @@ import org.json.JSONObject;
 public class Converter {
 	static ArrayList<Song> songs = new ArrayList<Song>();
 	static String playlistId;
-
-	private enum Service {
-		SPOTIFY, GOOGLE, APPLE
-	};
-
 	private static Service sourceService;
 	private static Service destinationService;
 	static String auth = "BQDvG8Y47e31-rBTlzxFSRA9aGbBaoKS1p3fFy3YuJdHgU8XltSMLXOK3FG-MfLYx1a1ZcTE0foMQkuNQxrIvJKZAvt9svKafcaEfyDSnsSmak0T7nAxtxTXtDi1IT-eOl4yP2s6SJbYUhKeJT7mPp-UWJ-qx-ga0a-h0FXbI0W4osZU6sZ3SXQOd6GJD9yQby6kCg";
+	
+
+	public static Service getSourceService() {
+		return sourceService;
+	}
+
+	public static void setSourceService(Service sourceService) {
+		Converter.sourceService = sourceService;
+	}
+
+	public static Service getDestinationService() {
+		return destinationService;
+	}
+
+	public static void setDestinationService(Service destinationService) {
+		Converter.destinationService = destinationService;
+	}
+
+	public static void setAuth(String auth) {
+		Converter.auth = auth;
+	}
 
 	private static void getSongsApple(String id) {
 		// TODO Auto-generated method stub
