@@ -109,7 +109,7 @@ public class Converter {
 	public static void getAllSongs(String id) throws IOException {
 		switch (sourceService) {
 		case SPOTIFY:
-			getSongsSpotify(id);
+			SpotifyConverter.getSongs(id);
 		case GOOGLE:
 			getSongsGoogle(id);
 		case APPLE:

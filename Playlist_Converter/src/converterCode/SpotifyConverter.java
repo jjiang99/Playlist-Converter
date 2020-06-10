@@ -1,16 +1,13 @@
 package converterCode;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -19,26 +16,8 @@ import org.json.JSONObject;
 public class SpotifyConverter extends Converter {
 	static ArrayList<Song> songs = new ArrayList<Song>();
 	static String playlistId;
-
-	private enum Service {
-		SPOTIFY, GOOGLE, APPLE
-	};
-
-	private static Service sourceService;
-	private static Service destinationService;
 	static String auth;
 
-
-
-	private static void getSongsApple(String id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void getSongsGoogle(String id) {
-		// TODO Auto-generated method stub
-
-	}
 
 	public static void printSongs() {
 		for (Song s : songs) {
@@ -112,18 +91,9 @@ public class SpotifyConverter extends Converter {
 		return content.toString();
 	}
 
-	public static void getAllSongs(String id) throws IOException {
-		switch (sourceService) {
-		case SPOTIFY:
-			getSongsSpotify(id);
-		case GOOGLE:
-			getSongsGoogle(id);
-		case APPLE:
-			getSongsApple(id);
-		}
-	}
-
-	private static void getSongsSpotify(String playlistId) throws IOException {
+	static void getSongs(String link) throws IOException {
+		playlistId = (link.split("playlist/")[1]).split("\\?")[0];
+		authenticate();
 		String endpoint = "https://api.spotify.com/v1/playlists/" + playlistId + "/tracks";
 
 		URL url = new URL(endpoint);
@@ -146,7 +116,7 @@ public class SpotifyConverter extends Converter {
 		con.disconnect();
 
 		JSONObject response = new JSONObject(content.toString());
-		// System.out.println(response.toString());
+		System.out.println(response.toString());
 		JSONArray playlistSongs = response.getJSONArray("items");
 
 		String title = "";
@@ -167,32 +137,6 @@ public class SpotifyConverter extends Converter {
 		}
 	}
 
-	public static String putAllSongs() throws IOException {
-		switch (destinationService) {
-		case SPOTIFY:
-			return putSongsSpotify();
-		case GOOGLE:
-			return putSongsGoogle();
-		case APPLE:
-			return putSongsApple();
-		}
-		return null;
-	}
-
-	private static String putSongsApple() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static String putSongsGoogle() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static String putSongsSpotify() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	private static String getUserId() throws IOException {
 		String testurl = "https://api.spotify.com/v1/me";
@@ -300,7 +244,7 @@ public class SpotifyConverter extends Converter {
 	}
 
 	public static void copyPlaylist(String url) throws IOException {
-		getSongsSpotify(url);
+		getSongs(url);
 //		for (Song s : songs) {
 //			System.out.println(s.name + " " + s.artist);
 //		}
@@ -341,7 +285,9 @@ public class SpotifyConverter extends Converter {
 
 		
 		//authenticate();
-		copyPlaylist("7xAQ6VoGM9pd5HHEccRGKP");
+		//copyPlaylist("7xAQ6VoGM9pd5HHEccRGKP");
+		getSongs("https://open.spotify.com/playlist/0MMPezm4ZGpLDVxXVtvPnT?si=Aq2IVdoQRaGrDkzOcOciuw");
+		printSongs();
 //		String s = null;
 //		String path = "Python_Test\\GooglePlayConverter.py";
 //		Process p = Runtime.getRuntime().exec("python " + path);
