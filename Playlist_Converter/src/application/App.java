@@ -12,9 +12,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -26,7 +29,12 @@ public class App extends Application {
 	Scene homeScene;
 	Scene originSelect;
 	Scene destinationSelect;
+	Scene serviceSelect;
 	Scene informationInput;
+
+	int width = 500;
+	int height = 500;
+	int standardSpacing = 10;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -39,6 +47,7 @@ public class App extends Application {
 		createOriginSelect(primaryStage);
 		createDestinationSelect(primaryStage);
 		createInformationInput(primaryStage);
+		createServiceSelect(primaryStage);
 
 		primaryStage.setScene(homeScene);
 		primaryStage.setTitle("Playlist Converter");
@@ -115,14 +124,14 @@ public class App extends Application {
 
 		Button button = new Button("Start");
 		button.setAlignment(Pos.CENTER);
-		button.setOnAction(e -> stage.setScene(originSelect));
+		button.setOnAction(e -> stage.setScene(serviceSelect));
 		welcome.setAlignment(Pos.TOP_CENTER);
 		instructions.setAlignment(Pos.TOP_CENTER);
 
 		VBox layout = new VBox(0);
 		layout.getChildren().addAll(welcome, instructions, button);
 		layout.setAlignment(Pos.CENTER);
-		homeScene = new Scene(layout, 300, 300);
+		homeScene = new Scene(layout, width, height);
 	}
 
 	public void createOriginSelect(Stage stage) {
@@ -192,7 +201,7 @@ public class App extends Application {
 		StackPane root = new StackPane();
 		root.getChildren().add(vbox1);
 
-		originSelect = new Scene(root, 300, 300);
+		originSelect = new Scene(root, width, height);
 	}
 
 	public void createDestinationSelect(Stage stage) {
@@ -254,7 +263,7 @@ public class App extends Application {
 
 		Button backButton = new Button();
 		backButton.setText("Back");
-		backButton.setOnAction(e -> stage.setScene(destinationSelect));
+		backButton.setOnAction(e -> stage.setScene(originSelect));
 
 		VBox vbox1 = new VBox(textFlow, buttons, backButton, testButton);
 		vbox1.setAlignment(Pos.CENTER);
@@ -262,11 +271,71 @@ public class App extends Application {
 		StackPane root = new StackPane();
 		root.getChildren().add(vbox1);
 
-		destinationSelect = new Scene(root, 300, 300);
+		destinationSelect = new Scene(root, width, height);
 
 	}
 
-	public void createInformationInput(Stage primaryStage) {
+	public void createServiceSelect(Stage stage) {
+		VBox root = new VBox();
+		root.setAlignment(Pos.CENTER);
+		
+		HBox serviceSelection = new HBox();
+		serviceSelection.setAlignment(Pos.CENTER);
+		
+		ToggleGroup originGroup = new ToggleGroup();
+		ToggleButton spotifyButtonLeft = new ToggleButton("Spotify");
+		ToggleButton appleMusicButtonLeft = new ToggleButton("Apple Music");
+		ToggleButton googlePlayButtonLeft = new ToggleButton("Google Play Music");
+		
+		spotifyButtonLeft.setToggleGroup(originGroup);
+		appleMusicButtonLeft.setToggleGroup(originGroup);
+		googlePlayButtonLeft.setToggleGroup(originGroup);
+		
+		spotifyButtonLeft.setMinWidth(120);
+		appleMusicButtonLeft.setMinWidth(120);
+		googlePlayButtonLeft.setMinWidth(120);
+		
+		ToggleGroup destinationGroup = new ToggleGroup();
+		ToggleButton spotifyButtonRight = new ToggleButton("Spotify");
+		ToggleButton appleMusicButtonRight = new ToggleButton("Apple Music");
+		ToggleButton googlePlayButtonRight = new ToggleButton("Google Play Music");
+		
+		spotifyButtonRight.setToggleGroup(destinationGroup);
+		appleMusicButtonRight.setToggleGroup(destinationGroup);
+		googlePlayButtonRight.setToggleGroup(destinationGroup);
+		
+		spotifyButtonRight.setMinWidth(120);
+		appleMusicButtonRight.setMinWidth(120);
+		googlePlayButtonRight.setMinWidth(120);
+		
+		VBox originButtons = new VBox(spotifyButtonLeft, appleMusicButtonLeft, googlePlayButtonLeft);
+		VBox destinationButtons = new VBox(spotifyButtonRight, appleMusicButtonRight, googlePlayButtonRight);
+		originButtons.setAlignment(Pos.CENTER);
+		originButtons.setSpacing(standardSpacing);
+		destinationButtons.setAlignment(Pos.CENTER);
+		destinationButtons.setSpacing(standardSpacing);
+		serviceSelection.getChildren().addAll(originButtons, destinationButtons);
+		serviceSelection.setSpacing(50);
+		
+		Button backButton = new Button();
+		backButton.setText("Back");
+		backButton.setOnAction(e -> stage.setScene(homeScene));
+		
+		Button nextButton = new Button();
+		nextButton.setText("Next");
+		nextButton.setOnAction(e -> stage.setScene(informationInput));
+		
+		HBox navigationButtons = new HBox(backButton, nextButton);
+		navigationButtons.setAlignment(Pos.BASELINE_CENTER);
+		navigationButtons.setSpacing(standardSpacing);
+		
+		root.getChildren().addAll(serviceSelection, navigationButtons);
+		root.setSpacing(standardSpacing);
+		// create the scene
+		serviceSelect = new Scene(root, width, height);
+	}
+
+	public void createInformationInput(Stage stage) {
 		TextField input = new TextField("Enter the playlist link");
 
 		Button enterButton = new Button();
@@ -289,13 +358,26 @@ public class App extends Application {
 				}
 			}
 		});
+		
+		Button backButton = new Button();
+		backButton.setText("Back");
+		backButton.setOnAction(e -> stage.setScene(serviceSelect));
+		
+		Button nextButton = new Button();
+		nextButton.setText("Convert!");
+		nextButton.setOnAction(e -> stage.setScene(informationInput));
+		
+		HBox navigationButtons = new HBox(backButton, nextButton);
+		navigationButtons.setAlignment(Pos.BASELINE_CENTER);
+		navigationButtons.setSpacing(standardSpacing);
 
-		VBox vbox1 = new VBox(input, enterButton);
+		VBox vbox1 = new VBox(input, enterButton, navigationButtons);
 		vbox1.setAlignment(Pos.CENTER);
+		vbox1.setSpacing(standardSpacing);
 
 		StackPane root = new StackPane();
 		root.getChildren().add(vbox1);
-		informationInput = new Scene(root, 300, 300);
+		informationInput = new Scene(root, width, height);
 	}
 
 	public TextField getSpotifyPanel() {

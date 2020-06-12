@@ -20,9 +20,6 @@ public class AppleMusicConverter {
 	static ArrayList<Song> songs = new ArrayList<Song>();
 	static String playlistId;
 
-	private enum Service {
-		SPOTIFY, GOOGLE, APPLE
-	};
 
 	static String auth = "BQDvG8Y47e31-rBTlzxFSRA9aGbBaoKS1p3fFy3YuJdHgU8XltSMLXOK3FG-MfLYx1a1ZcTE0foMQkuNQxrIvJKZAvt9svKafcaEfyDSnsSmak0T7nAxtxTXtDi1IT-eOl4yP2s6SJbYUhKeJT7mPp-UWJ-qx-ga0a-h0FXbI0W4osZU6sZ3SXQOd6GJD9yQby6kCg";
 
