@@ -14,7 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class SpotifyConverter extends Converter {
-	static ArrayList<Song> songs = new ArrayList<Song>();
 	static String playlistId;
 	static String auth;
 
@@ -186,7 +185,7 @@ public class SpotifyConverter extends Converter {
 		return "";
 	}
 
-	public static String createPlaylist() throws IOException {
+	public static String createPlaylist(String playlistName) throws IOException {
 		String userId = getUserId();
 
 		String endpoint = "https://api.spotify.com/v1/users/" + userId + "/playlists";
@@ -197,7 +196,7 @@ public class SpotifyConverter extends Converter {
 		con.setRequestProperty("Authorization", "Bearer " + auth);
 		con.setRequestProperty("Content-Type", "application/json");
 		JSONObject body = new JSONObject();
-		body.put("name", "Copied playlist");
+		body.put("name", playlistName);
 		body.put("description", "copied existing spotify playlist to test functionality");
 		body.put("public", false);
 		con.setDoOutput(true);
@@ -214,7 +213,7 @@ public class SpotifyConverter extends Converter {
 		// System.out.println(content);
 		JSONObject obj = new JSONObject(content.toString());
 		playlistId = obj.getString("id");
-		return playlistId;
+		return "https://open.spotify.com/playlist/" + playlistId;
 	}
 
 	public static void addSongs(ArrayList<String> uris) throws IOException {
@@ -249,7 +248,7 @@ public class SpotifyConverter extends Converter {
 //			System.out.println(s.name + " " + s.artist);
 //		}
 
-		createPlaylist();
+		createPlaylist("hello");
 		ArrayList<String> uris = new ArrayList<String>();
 		// System.out.println("ID: " + playlistId);
 		int counter = 0;
@@ -264,6 +263,40 @@ public class SpotifyConverter extends Converter {
 		}
 		addSongs(uris);
 		System.out.println("DONE");
+	}
+	
+	public static String putAllSongs(String name) throws IOException {
+		authenticate();
+		
+		String playlistLink = createPlaylist(name);
+		
+		ArrayList<String> uris = new ArrayList<String>();
+		// System.out.println("ID: " + playlistId);
+		int counter = 0;
+		int count = 0;
+		for (Song s : songs) {
+			String searchResult = findSong(s.name, s.artist);
+			if (!searchResult.equals("")) {
+				uris.add(searchResult);
+				counter++;
+				count++;
+			} else {
+				System.out.println(s.toString());
+			}
+			
+			
+			
+			if (counter == 50) {
+				addSongs(uris);
+				uris.clear();
+				counter = 0;
+			}
+			
+		}
+		addSongs(uris);
+		System.out.println("Attempted: " + songs.size());
+		System.out.println("Added: " + count);
+		return playlistLink;
 	}
 
 	public static void main(String[] args) throws IOException {

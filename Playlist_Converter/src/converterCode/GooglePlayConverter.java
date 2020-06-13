@@ -21,13 +21,13 @@ public class GooglePlayConverter extends Converter {
 		// read the output from the command
 		System.out.println("Here is the standard output of the command:");
 		while ((s = stdInput.readLine()) != null) {
-			System.out.println(s);
+			//System.out.println(s);
 			
 			String[] songInfo = s.split(", ");
 			songs.add(new Song(songInfo[0], songInfo[1]));
 			s = null;
 		}
-		printSongs();
+		
 		// read any errors from the attempted command
 //		System.out.println("\nHere is the standard error of the command (if any):");
 //		while ((s = stdError.readLine()) != null) {
@@ -36,7 +36,8 @@ public class GooglePlayConverter extends Converter {
 	}
 
 	public static void main(String[] args) throws IOException {
-//		 getAllSongs();
+		 getAllSongs();
+//		 printSongs();
 		//deezer
 	}
 }
