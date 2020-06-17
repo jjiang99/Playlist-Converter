@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class Converter {
 	static ArrayList<Song> songs = new ArrayList<Song>();
+	static ArrayList<Song> unmatchedSongs = new ArrayList<Song>();
 	static String playlistId;
 	private static Service sourceService;
 	private static Service destinationService;
@@ -123,7 +124,8 @@ public class Converter {
 //		searchSong("Jackie Chan", "Tiësto");
 		
 		GooglePlayConverter.getAllSongs();
-		System.out.println(SpotifyConverter.putAllSongs("Copy From Google"));
+		GooglePlayConverter.printSongs();
+		//System.out.println(SpotifyConverter.putAllSongs("Copy From Google"));
 	}
 
 }

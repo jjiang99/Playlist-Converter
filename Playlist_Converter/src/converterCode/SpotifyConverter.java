@@ -17,7 +17,6 @@ public class SpotifyConverter extends Converter {
 	static String playlistId;
 	static String auth;
 
-
 	public static void printSongs() {
 		for (Song s : songs) {
 			System.out.println(s.toString());
@@ -157,24 +156,28 @@ public class SpotifyConverter extends Converter {
 		return obj.getString("id");
 	}
 
-	public static String findSong(String pTitle, String pArtist) throws IOException {
+	public static String findSong(Song song) throws IOException {
+		String pTitle = song.getName();
+		String pArtist = song.getArtist();
 		String jsonString = searchSong(pTitle, pArtist);
 		JSONObject obj = new JSONObject(jsonString);
 		JSONObject tracks = obj.getJSONObject("tracks");
-		JSONArray songs = tracks.getJSONArray("items");
+		JSONArray searchResults = tracks.getJSONArray("items");
 		// System.out.println(songs.length());
 		String title = "";
 		String artist = "";
 		String uri = "";
 
-		for (int i = 0; i < songs.length(); i++) {
-			artist = songs.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
-			title = songs.getJSONObject(i).getString("name");
+		for (int i = 0; i < searchResults.length(); i++) {
+			artist = searchResults.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
+			title = searchResults.getJSONObject(i).getString("name");
 //			songId = songs.getJSONObject(i).getString("id");
-			uri = songs.getJSONObject(i).getString("uri");
+			uri = searchResults.getJSONObject(i).getString("uri");
 
 			if (pTitle.equalsIgnoreCase(title) && pArtist.equalsIgnoreCase(artist)) {
 				return uri;
+			} else {
+				unmatchedSongs.add(song);
 			}
 
 //			System.out.print(title + "by ");
@@ -253,7 +256,7 @@ public class SpotifyConverter extends Converter {
 		// System.out.println("ID: " + playlistId);
 		int counter = 0;
 		for (Song s : songs) {
-			uris.add(findSong(s.name, s.artist));
+			uris.add(findSong(s));
 			counter++;
 
 			if (counter == 50) {
@@ -275,7 +278,7 @@ public class SpotifyConverter extends Converter {
 		int counter = 0;
 		int count = 0;
 		for (Song s : songs) {
-			String searchResult = findSong(s.name, s.artist);
+			String searchResult = findSong(s);
 			if (!searchResult.equals("")) {
 				uris.add(searchResult);
 				counter++;
