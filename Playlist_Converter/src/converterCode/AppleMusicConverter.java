@@ -21,12 +21,28 @@ public class AppleMusicConverter {
 	static String playlistId;
 
 
-	static String auth = "BQDvG8Y47e31-rBTlzxFSRA9aGbBaoKS1p3fFy3YuJdHgU8XltSMLXOK3FG-MfLYx1a1ZcTE0foMQkuNQxrIvJKZAvt9svKafcaEfyDSnsSmak0T7nAxtxTXtDi1IT-eOl4yP2s6SJbYUhKeJT7mPp-UWJ-qx-ga0a-h0FXbI0W4osZU6sZ3SXQOd6GJD9yQby6kCg";
+	static String auth;
 
+	
+	public static void authenticate() throws IOException {
+		String s = null;
+		String path = "Python_Test\\appleMusicAuthenticator.py";
+		Process p = Runtime.getRuntime().exec("python " + path);
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-	private static void getSongsApple(String id) {
-		// TODO Auto-generated method stub
+		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
+		// read the output from the command
+		// System.out.println("Here is the standard output of the command:\n");
+		while ((s = stdInput.readLine()) != null) {
+			auth = s;
+		}
+
+		// read any errors from the attempted command
+		// System.out.println("Here is the standard error of the command (if any):\n");
+		while ((s = stdError.readLine()) != null) {
+			System.out.println(s);
+		}
 	}
 
 	public static void printSongs() {
@@ -260,21 +276,30 @@ public class AppleMusicConverter {
 	}
 
 	public static void main(String[] args) throws IOException {
-		// URL url = new
-		// URL("https://open.spotify.com/playlist/0MMPezm4ZGpLDVxXVtvPnT");
-		// URL url = new
-		// URL("https://open.spotify.com/playlist/1GkR7O3ziHXGibWfQJI2Dn?si=TTdj_pQTTBC1V1vMwa-MQw");
-		// getSongs(url);
+		authenticate();
+//		System.out.println(auth);
+		
+		String testurl = "https://api.music.apple.com/v1/catalog/us/playlists/p.MoGJ9bvSlYPoNB";
+		// System.out.println(testurl);
+		URL endpoint = new URL(testurl);
+		HttpURLConnection con = (HttpURLConnection) endpoint.openConnection();
+		con.setRequestMethod("GET");
+		con.setRequestProperty("Authorization", "Bearer " + auth);
+		con.setRequestProperty("Content-Type", "application/json");
 
-		// System.out.println(getAuthToken());
-//		System.out.println(findSong("jungle", "Drake"));
-		// System.out.println(getUserId());
-		// System.out.println(createPlaylist());
-		// System.out.println(findSong("Saturday Sun", "Vance Joy"));
-		// addSong();
-		copyPlaylist("7xAQ6VoGM9pd5HHEccRGKP");
-		// getSongsSpotify("7xAQ6VoGM9pd5HHEccRGKP");
-//		searchSong("Jackie Chan", "Tiësto");
+		// System.out.println("TEST URL: " + testurl);
+
+		// int status = con.getResponseCode();
+		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+		String inputLine;
+		StringBuffer content = new StringBuffer();
+		while ((inputLine = in.readLine()) != null) {
+			content.append(inputLine);
+		}
+		in.close();
+		con.disconnect();
+
+		System.out.println(content);
 	}
 
 }

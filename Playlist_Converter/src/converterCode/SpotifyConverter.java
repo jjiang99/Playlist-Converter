@@ -39,20 +39,20 @@ public class SpotifyConverter extends Converter {
 
 	public static void authenticate() throws IOException {
 		String s = null;
-		String path = "Python_Test\\authenticator.py";
+		String path = "Python_Test\\spotifyAuthenticator.py";
 		Process p = Runtime.getRuntime().exec("python " + path);
 		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
 		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
 		// read the output from the command
-		//System.out.println("Here is the standard output of the command:\n");
+		// System.out.println("Here is the standard output of the command:\n");
 		while ((s = stdInput.readLine()) != null) {
 			auth = s;
 		}
 
 		// read any errors from the attempted command
-		//System.out.println("Here is the standard error of the command (if any):\n");
+		// System.out.println("Here is the standard error of the command (if any):\n");
 		while ((s = stdError.readLine()) != null) {
 			System.out.println(s);
 		}
@@ -135,7 +135,6 @@ public class SpotifyConverter extends Converter {
 		}
 	}
 
-
 	private static String getUserId() throws IOException {
 		String testurl = "https://api.spotify.com/v1/me";
 
@@ -176,6 +175,10 @@ public class SpotifyConverter extends Converter {
 
 			if (pTitle.equalsIgnoreCase(title) && pArtist.equalsIgnoreCase(artist)) {
 				return uri;
+			} else if (pTitle.toLowerCase().contains(title.toLowerCase()) && pArtist.equalsIgnoreCase(artist)) {
+				potentialMismatches.add(song);
+			} else if (title.toLowerCase().contains(pTitle.toLowerCase()) && pArtist.equalsIgnoreCase(artist)) {
+				potentialMismatches.add(song);
 			} else {
 				unmatchedSongs.add(song);
 			}
@@ -267,12 +270,12 @@ public class SpotifyConverter extends Converter {
 		addSongs(uris);
 		System.out.println("DONE");
 	}
-	
+
 	public static String putAllSongs(String name) throws IOException {
 		authenticate();
-		
+
 		String playlistLink = createPlaylist(name);
-		
+
 		ArrayList<String> uris = new ArrayList<String>();
 		// System.out.println("ID: " + playlistId);
 		int counter = 0;
@@ -284,17 +287,15 @@ public class SpotifyConverter extends Converter {
 				counter++;
 				count++;
 			} else {
-				System.out.println(s.toString());
+//				System.out.println(s.toString());
 			}
-			
-			
-			
+
 			if (counter == 50) {
 				addSongs(uris);
 				uris.clear();
 				counter = 0;
 			}
-			
+
 		}
 		addSongs(uris);
 		System.out.println("Attempted: " + songs.size());
@@ -319,9 +320,8 @@ public class SpotifyConverter extends Converter {
 		// getSongsSpotify("7xAQ6VoGM9pd5HHEccRGKP");
 //		searchSong("Jackie Chan", "Tiësto");
 
-		
-		//authenticate();
-		//copyPlaylist("7xAQ6VoGM9pd5HHEccRGKP");
+		// authenticate();
+		// copyPlaylist("7xAQ6VoGM9pd5HHEccRGKP");
 		getSongs("https://open.spotify.com/playlist/0MMPezm4ZGpLDVxXVtvPnT?si=Aq2IVdoQRaGrDkzOcOciuw");
 		printSongs();
 //		String s = null;
