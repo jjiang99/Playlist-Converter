@@ -3,7 +3,7 @@ Created on Jun. 19, 2020
 
 @author: justi
 '''
-import datetime
+from datetime import datetime
 import jwt
 import requests
 import json
@@ -17,17 +17,14 @@ teamId = "77V6T6PAVC"
 alg = 'ES256'
 
 
-time_now = datetime.datetime.now()
-time_expired = time_now + datetime.timedelta(hours=12)
-
 headers = {
     'alg': alg,
     'kid': keyId
 }
 payload = {
     'iss': teamId,  # issuer
-    'iat': int(time_now.strftime('%S')),  # issued at
-    'exp': int(time_expired.strftime('%S'))  # expiration time
+    'iat': int(datetime.now().timestamp()),  # issued at
+    'exp': int(datetime.now().timestamp())  # expiration time
 }
 
 
@@ -36,10 +33,10 @@ if __name__ == "__main__":
 
     token = jwt.encode(payload, secret, algorithm=alg, headers=headers)
     token_str = token.decode()
-    print(token_str)
+#     print(token_str)
 #     ADAMS PLAYLIST: https://api.music.apple.com/v1/me/library/playlists/p.MoGJB2ktlYPoNB
 #     ALBUM: https://api.music.apple.com/v1/catalog/ca/albums/1373516902
-    url = "https://api.music.apple.com/v1/me/library/playlists/p.MoGJB2ktlYPoNB"
+    url = "https://api.music.apple.com/v1/catalog/us/playlists/pl.u-PDb40YATLAz4XN"
     # print (f"curl -v -H 'Authorization: Bearer {token_str}' {url}")
     res = requests.get(url, headers={'Authorization': "Bearer " +  token_str})
     if res == None or res == '':
