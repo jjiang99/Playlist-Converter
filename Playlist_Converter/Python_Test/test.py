@@ -459,5 +459,5 @@ keyId = "JT5J8K27HR"
 teamId = "77V6T6PAVC"
 client = AppleMusicClient(teamId, keyId, secret)    
 
-client.search("travis scott", limit=None, offset=None, storefront='us', types='songs')
+client.user_playlist_create("name", description=None, track_ids=None, include=None)
 
