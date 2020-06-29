@@ -2,7 +2,8 @@ import spotipy
 import spotipy.util as util
 
 PORT_NUMBER = 8080
-username = "repthecave"
+username = "li7jnekrsvk7c9a7508eic6rw" #Janek 
+# username = "repthecave"  #Alan
 SPOTIPY_CLIENT_ID = '1f70624ac6c84c93a95998e8d1f5ba98'
 SPOTIPY_CLIENT_SECRET = '66194225c1e6478eb181fe569215059d'
 SPOTIPY_REDIRECT_URI = 'http://localhost:8080'
