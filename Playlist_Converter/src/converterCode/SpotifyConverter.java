@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 public class SpotifyConverter extends Converter {
 	static String playlistId;
-	static String auth;
+	static String auth = "BQBSvxgPfWOMZ7-WJ1USdj0tboKJJZ2SyLFF9gl6UO2bcV7qTN1Q3YHuI251rUnYYMrtk8R30bIAGgRuaVUyOFlcRVW0jBnHh47Ep1HvSBu3Q1KbJvGHqQEgvMDVTDXLIS9T28zA0qQZBVaOvsT0rrrmnEZD9s4n7YeVCfV_T6Kf3OZXfg";
 
 	public static void printSongs() {
 		for (Song s : songs) {
@@ -38,6 +38,7 @@ public class SpotifyConverter extends Converter {
 	}
 
 	public static void authenticate() throws IOException {
+//		System.out.println("AUTH");
 		String s = null;
 		String path = "Python_Test\\spotifyAuthenticator.py";
 		Process p = Runtime.getRuntime().exec("python " + path);
@@ -89,7 +90,7 @@ public class SpotifyConverter extends Converter {
 		return content.toString();
 	}
 
-	static void getSongs(String link) throws IOException {
+	public static void getSongs(String link) throws IOException {
 		playlistId = (link.split("playlist/")[1]).split("\\?")[0];
 		authenticate();
 		String endpoint = "https://api.spotify.com/v1/playlists/" + playlistId + "/tracks";
@@ -177,17 +178,20 @@ public class SpotifyConverter extends Converter {
 				return uri;
 			} else if (pTitle.toLowerCase().contains(title.toLowerCase()) && pArtist.equalsIgnoreCase(artist)) {
 				potentialMismatches.add(song);
+				return uri;
 			} else if (title.toLowerCase().contains(pTitle.toLowerCase()) && pArtist.equalsIgnoreCase(artist)) {
 				potentialMismatches.add(song);
+				return uri;
 			} else {
 				unmatchedSongs.add(song);
+				break;
 			}
 
 //			System.out.print(title + "by ");
 //			System.out.print(artist + " ");
 //			System.out.println("ID: " + uri);
 		}
-
+		
 		return "";
 	}
 
@@ -203,7 +207,7 @@ public class SpotifyConverter extends Converter {
 		con.setRequestProperty("Content-Type", "application/json");
 		JSONObject body = new JSONObject();
 		body.put("name", playlistName);
-		body.put("description", "copied existing spotify playlist to test functionality");
+		body.put("description", "https://music.apple.com/ca/playlist/summer-2019/pl.u-PDb40YATLAz4XN");
 		body.put("public", false);
 		con.setDoOutput(true);
 		con.setRequestProperty("Content-Length", Integer.toString(body.length()));
@@ -281,6 +285,7 @@ public class SpotifyConverter extends Converter {
 		int counter = 0;
 		int count = 0;
 		for (Song s : songs) {
+//			System.out.println(s.toString());
 			String searchResult = findSong(s);
 			if (!searchResult.equals("")) {
 				uris.add(searchResult);
@@ -300,6 +305,16 @@ public class SpotifyConverter extends Converter {
 		addSongs(uris);
 		System.out.println("Attempted: " + songs.size());
 		System.out.println("Added: " + count);
+		
+		
+		System.out.println("Mismatches:");
+		for (Song s : potentialMismatches) {
+			System.out.println(s.toString());
+		}
+		System.out.println("Unmatched:");
+		for (Song s : unmatchedSongs) {
+			System.out.println(s.toString());
+		}
 		return playlistLink;
 	}
 

@@ -123,10 +123,11 @@ public class Converter {
 		// copyPlaylist("7xAQ6VoGM9pd5HHEccRGKP");
 		// getSongsSpotify("7xAQ6VoGM9pd5HHEccRGKP");
 //		searchSong("Jackie Chan", "Tiësto");
-		
-		GooglePlayConverter.getAllSongs();
-		//GooglePlayConverter.printSongs();
-		System.out.println(SpotifyConverter.putAllSongs("Copy From Google"));
+//		SpotifyConverter.authenticate();
+//		GooglePlayConverter.getAllSongs();
+		AppleMusicConverter.getAllSongs("https://music.apple.com/ca/playlist/summer-2020/pl.u-b3b8RX7syNGrgR");
+//		//GooglePlayConverter.printSongs();
+		System.out.println(SpotifyConverter.putAllSongs("Copy From Apple"));
 	}
 
 }

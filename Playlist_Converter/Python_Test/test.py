@@ -457,7 +457,9 @@ MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg1zjSooejCIPTHpci8joGxMdczELa1VTj
 -----END PRIVATE KEY-----"""
 keyId = "JT5J8K27HR"
 teamId = "77V6T6PAVC"
+
+userToken = "AgPPAtfi1bMzzM28q0E2668Gc3Qt0M7V1olkRFE2TSFxqXsCC2Ws6/Y3OWO6r0rwdqyUzmrTzx8fvmg/EqBUPdD9lsHDjZOPQ4D9iqixaCWyq1Ii7SYeq+JoFAEHHS8dHhVfZ2iagVv9KqsciRU44A7mtHXoiuZqzjHy2f+BgAZny3/lKpeFdPBiQzfWJ2eFJlgzoh/0nnIY06BMpk1JFndNPh8PVnmt1PmI9K1oaKG1AZghZA=="
 client = AppleMusicClient(teamId, keyId, secret)    
 
-client.user_playlist_create("name", description=None, track_ids=None, include=None)
+client.get_playlist("p.MoGJYM3CYXW09B")
 

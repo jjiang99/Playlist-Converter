@@ -36,7 +36,7 @@ public class GooglePlayConverter extends Converter {
 	}
 
 	public static void main(String[] args) throws IOException {
-		 getAllSongs();
+//		 getAllSongs();
 //		 printSongs();
 		//deezer
 	}

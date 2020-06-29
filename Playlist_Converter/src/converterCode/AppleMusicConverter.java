@@ -2,7 +2,6 @@ package converterCode;
 
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -10,14 +9,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class AppleMusicConverter {
-	static ArrayList<Song> songs = new ArrayList<Song>();
+public class AppleMusicConverter extends Converter {
 	static String playlistId;
 
 
@@ -25,24 +22,7 @@ public class AppleMusicConverter {
 
 	
 	public static void authenticate() throws IOException {
-		String s = null;
-		String path = "Python_Test\\appleMusicAuthenticator.py";
-		Process p = Runtime.getRuntime().exec("python " + path);
-		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-		// read the output from the command
-		// System.out.println("Here is the standard output of the command:\n");
-		while ((s = stdInput.readLine()) != null) {
-			auth = s;
-		}
-
-		// read any errors from the attempted command
-		// System.out.println("Here is the standard error of the command (if any):\n");
-		while ((s = stdError.readLine()) != null) {
-			System.out.println(s);
-		}
 	}
 
 	public static void printSongs() {
@@ -66,63 +46,13 @@ public class AppleMusicConverter {
 	}
 
 	public static String getAuthToken() throws IOException {
-		String testurl = "https://accounts.spotify.com/authorize";
 
-		URL url = new URL(testurl);
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setRequestMethod("GET");
-		con.setRequestProperty("Content-Type", "application/json");
-
-		Map<String, String> parameters = new HashMap<>();
-		parameters.put("q", "summer%20keshi");
-		parameters.put("type", "track");
-
-		con.setDoOutput(true);
-		DataOutputStream out = new DataOutputStream(con.getOutputStream());
-		out.writeBytes(getParamsString(parameters));
-		out.flush();
-		out.close();
-
-		// System.out.println("TEST URL: " + testurl);
-
-//		int status = con.getResponseCode();
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer content = new StringBuffer();
-		while ((inputLine = in.readLine()) != null) {
-			content.append(inputLine);
-		}
-		in.close();
-		con.disconnect();
-
-		System.out.println(content);
 		return null;
 	}
 
 	public static String searchSong(String title, String artist) throws IOException {
-		String testurl = "https://api.spotify.com/v1/search?q=" + URLEncoder.encode(title, "UTF-8").replace(" ", "%20")
-				+ "%20" + URLEncoder.encode(artist, "UTF-8").replace(" ", "%20") + "&type=track";
-		// System.out.println(testurl);
-		URL endpoint = new URL(testurl);
-		HttpURLConnection con = (HttpURLConnection) endpoint.openConnection();
-		con.setRequestMethod("GET");
-		con.setRequestProperty("Authorization", "Bearer " + auth);
-		con.setRequestProperty("Content-Type", "application/json");
 
-		// System.out.println("TEST URL: " + testurl);
-
-		// int status = con.getResponseCode();
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
-		String inputLine;
-		StringBuffer content = new StringBuffer();
-		while ((inputLine = in.readLine()) != null) {
-			content.append(inputLine);
-		}
-		in.close();
-		con.disconnect();
-
-		// System.out.println(content);
-		return content.toString();
+		return null;
 	}
 
 
@@ -274,32 +204,35 @@ public class AppleMusicConverter {
 		addSongs(uris);
 		System.out.println("DONE");
 	}
+	
+	public static void getAllSongs(String id) throws IOException {
+		Process p = Runtime.getRuntime().exec("python -c \"from Python_Test.AppleMusicConverter import getAllSongs; getAllSongs(\'" + id + "\')\"");
+		
+		String s = null;
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+//		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+		// read the output from the command
+//		System.out.println("Here is the standard output of the command:");
+		while ((s = stdInput.readLine()) != null) {
+//			System.out.println(s);
+			
+			String[] songInfo = s.split(", ");
+			songs.add(new Song(songInfo[0], songInfo[1]));
+			s = null;
+		}
+		
+		// read any errors from the attempted command
+//		System.out.println("\nHere is the standard error of the command (if any):");
+//		while ((s = stdError.readLine()) != null) {
+//			System.out.println(s);
+//		}
+	}
 
 	public static void main(String[] args) throws IOException {
-		authenticate();
-//		System.out.println(auth);
-		
-		String testurl = "https://api.music.apple.com/v1/catalog/us/playlists/p.MoGJ9bvSlYPoNB";
-		// System.out.println(testurl);
-		URL endpoint = new URL(testurl);
-		HttpURLConnection con = (HttpURLConnection) endpoint.openConnection();
-		con.setRequestMethod("GET");
-		con.setRequestProperty("Authorization", "Bearer " + auth);
-		con.setRequestProperty("Content-Type", "application/json");
-
-		// System.out.println("TEST URL: " + testurl);
-
-		// int status = con.getResponseCode();
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
-		String inputLine;
-		StringBuffer content = new StringBuffer();
-		while ((inputLine = in.readLine()) != null) {
-			content.append(inputLine);
-		}
-		in.close();
-		con.disconnect();
-
-		System.out.println(content);
+		getAllSongs("https://music.apple.com/ca/playlist/summer-2019/pl.u-PDb40YATLAz4XN");
+		printSongs();
 	}
 
 }
