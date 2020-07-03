@@ -62,20 +62,20 @@ public class AppleMusicConverter extends Converter {
 
 
 
-	private static String putSongsApple() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static String putSongsGoogle() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static String putSongsSpotify() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	private static String putSongsApple() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	private static String putSongsGoogle() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	private static String putSongsSpotify() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	private static String getUserId() throws IOException {
 		String testurl = "https://api.spotify.com/v1/me";

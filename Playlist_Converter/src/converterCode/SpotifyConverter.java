@@ -121,6 +121,7 @@ public class SpotifyConverter extends Converter {
 		String title = "";
 		String artist = "";
 		String uri = "";
+		ArrayList<Tag> tags;
 		JSONObject track = null;
 
 		for (int i = 0; i < playlistSongs.length(); i++) {
@@ -129,7 +130,13 @@ public class SpotifyConverter extends Converter {
 			title = track.getString("name");
 			uri = track.getString("uri");
 
-			songs.add(new Song(title, artist, uri));
+			tags = processTitle(title.toLowerCase());
+
+			if (tags.size() > 0) {
+				songs.add(new Song(title, artist, uri, tags));
+			} else {
+				songs.add(new Song(title, artist, uri));
+			}
 //				System.out.print(title + " by ");
 //				System.out.print(artist + " ");
 //				System.out.println("ID: " + uri);
@@ -182,18 +189,41 @@ public class SpotifyConverter extends Converter {
 			} else if (title.toLowerCase().contains(pTitle.toLowerCase()) && pArtist.equalsIgnoreCase(artist)) {
 				potentialMismatches.add(song);
 				return uri;
-			} else {
-				unmatchedSongs.add(song);
-				break;
 			}
+//			} else {
+//				unmatchedSongs.add(song);
+//				break;
+//			}
 
 //			System.out.print(title + "by ");
 //			System.out.print(artist + " ");
 //			System.out.println("ID: " + uri);
 		}
-		
+
 		return "";
 	}
+
+	private static ArrayList<Tag> processTitle(String title) {
+		ArrayList<Tag> tags = new ArrayList<>();
+		if (title.contains("feat.") || title.contains("with")) {
+			tags.add(Tag.FEATURE);
+		}
+		
+		if (title.contains("remix")) {
+			tags.add(Tag.REMIX);
+		}
+		
+		if (title.contains("remaster")) {
+			tags.add(Tag.REMASTERED);
+		}
+		
+		if (title.contains("acoustic") || title.contains("stripped")) {
+			tags.add(Tag.ACOUSTIC);
+		}
+		
+		return tags;
+	}
+
 
 	public static String createPlaylist(String playlistName) throws IOException {
 		String userId = getUserId();
@@ -305,8 +335,7 @@ public class SpotifyConverter extends Converter {
 		addSongs(uris);
 		System.out.println("Attempted: " + songs.size());
 		System.out.println("Added: " + count);
-		
-		
+
 		System.out.println("Mismatches:");
 		for (Song s : potentialMismatches) {
 			System.out.println(s.toString());
@@ -337,32 +366,10 @@ public class SpotifyConverter extends Converter {
 
 		// authenticate();
 		// copyPlaylist("7xAQ6VoGM9pd5HHEccRGKP");
-		getSongs("https://open.spotify.com/playlist/0MMPezm4ZGpLDVxXVtvPnT?si=Aq2IVdoQRaGrDkzOcOciuw");
+//		getSongs("https://open.spotify.com/playlist/0MMPezm4ZGpLDVxXVtvPnT?si=Aq2IVdoQRaGrDkzOcOciuw");
+		getSongs("https://open.spotify.com/playlist/4CdlrNNLa2QLE110RzwCqL?si=3-cgkvFmTa-BkcpJ0auqaQ");
 		printSongs();
-//		String s = null;
-//		String path = "Python_Test\\GooglePlayConverter.py";
-//		Process p = Runtime.getRuntime().exec("python " + path);
-//		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-//
-//		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-//
-//		// read the output from the command
-//		System.out.println("Here is the standard output of the command:\n");
-//		while ((s = stdInput.readLine()) != null) {
-//			System.out.println(s);
-//			String[] songInfo = s.split(", ");
-//			songs.add(new Song(songInfo[0], songInfo[1]));
-//		}
-//		
-//		for (Song song : songs) {
-//			System.out.println(song.toString());
-//		}
-//
-//		// read any errors from the attempted command
-//		System.out.println("Here is the standard error of the command (if any):\n");
-//		while ((s = stdError.readLine()) != null) {
-//			//System.out.println(s);
-//		}
+
 	}
 
 }

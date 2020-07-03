@@ -1,12 +1,7 @@
 package converterCode;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class Song {
 	String name;
@@ -14,6 +9,7 @@ public class Song {
 	String album;
 	ArrayList<String> features;
 	String uri;
+	ArrayList<Tag> tags;
 
 //	public Song(String name) {
 //		this.name = name;
@@ -39,6 +35,13 @@ public class Song {
 		this.album = album;
 		this.uri = uri;
 	}
+	
+	public Song(String name, String artist, String uri, ArrayList<Tag> tags) {
+		this.name = name;
+		this.artist = new String(artist);
+		this.uri = uri;
+		this.tags = tags;
+	}
 
 	public String getAlbum() {
 		return album;
@@ -57,6 +60,9 @@ public class Song {
 	}
 
 	public String toString() {
+		if (tags != null) {
+			return "Name: " + name + "\t\tArtist: " + artist + "\t\tTags: " + tags.toString();
+		} 
 		return "Name: " + name + "\t\tArtist: " + artist + "\t\tAlbum: " + album;
 	}
 
