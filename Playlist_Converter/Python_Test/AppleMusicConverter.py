@@ -67,7 +67,10 @@ def getAllSongs(link):
     for track in result['data'][0]['relationships']['tracks']['data']:
 #         print(track['attributes']['albumName'])
 #         if (track['attributes']['name'] != None):
-        songs.append(Song(track['attributes']['name'], track['attributes']['artistName'], track['attributes']['albumName']))
+        title = str(track['attributes']['name'])
+        if ("feat." in title):
+            title = title.split("feat.")[0][0:-2]
+        songs.append(Song(title, str(track['attributes']['artistName']).split(" &")[0], track['attributes']['albumName']))
         
 
     for song in songs:
@@ -121,11 +124,12 @@ def putAllSongs():
 
 # if __name__ == "__main__":
     
-#     print(findSong("paranoid", "post malone", "asdas"))        
+# print(findSong("come back to me (feat. Shaylen)", "Chantel Jeffries", "asdas"))        
 #     songs = ['1373516907', '1373516907', '1373516907', '1373516907']
      
 #     addSongs(songs)
 #     getAllSongs("https://music.apple.com/ca/playlist/summer-2019/pl.u-PDb40YATLAz4XN")
+getAllSongs("https://music.apple.com/ca/playlist/summer-2020/pl.u-b3b8RX7syNGrgR")
 
 
 

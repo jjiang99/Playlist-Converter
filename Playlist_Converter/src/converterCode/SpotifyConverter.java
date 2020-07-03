@@ -67,7 +67,7 @@ public class SpotifyConverter extends Converter {
 //		System.out.println(testurl);
 		String testurl = "https://api.spotify.com/v1/search?q=" + URLEncoder.encode(title, "UTF-8").replace(" ", "%20")
 				+ "%20" + URLEncoder.encode(artist, "UTF-8").replace(" ", "%20") + "&type=track";
-		// System.out.println(testurl);
+//		System.out.println(testurl);
 		URL endpoint = new URL(testurl);
 		HttpURLConnection con = (HttpURLConnection) endpoint.openConnection();
 		con.setRequestMethod("GET");
@@ -175,12 +175,22 @@ public class SpotifyConverter extends Converter {
 		String artist = "";
 		String uri = "";
 
+		if (pTitle.contains("Come Back To Me")) {
+			System.out.println();
+			System.out.println();
+			System.out.println();
+			System.out.println("HELLO");
+			System.out.println();
+			System.out.println();
+			System.out.println();
+		}
 		for (int i = 0; i < searchResults.length(); i++) {
 			artist = searchResults.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
 			title = searchResults.getJSONObject(i).getString("name");
 //			songId = songs.getJSONObject(i).getString("id");
 			uri = searchResults.getJSONObject(i).getString("uri");
 
+			System.out.println("Query Title: " + pTitle + ", Search: " + title + " Query Artist: " + pArtist + ", " + "Search: " + artist);
 			if (pTitle.equalsIgnoreCase(title) && pArtist.equalsIgnoreCase(artist)) {
 				return uri;
 			} else if (pTitle.toLowerCase().contains(title.toLowerCase()) && pArtist.equalsIgnoreCase(artist)) {
@@ -189,7 +199,24 @@ public class SpotifyConverter extends Converter {
 			} else if (title.toLowerCase().contains(pTitle.toLowerCase()) && pArtist.equalsIgnoreCase(artist)) {
 				potentialMismatches.add(song);
 				return uri;
+			} else if (pTitle.toLowerCase().contains(title.toLowerCase())
+					&& pArtist.toLowerCase().contains(artist.toLowerCase())) {
+				potentialMismatches.add(song);
+				return uri;
+			} else if (title.toLowerCase().contains(pTitle.toLowerCase())
+					&& pArtist.toLowerCase().contains(artist.toLowerCase())) {
+				potentialMismatches.add(song);
+				return uri;
+			} else if (pTitle.toLowerCase().contains(title.toLowerCase())
+					&& artist.toLowerCase().contains(pArtist.toLowerCase())) {
+				potentialMismatches.add(song);
+				return uri;
+			} else if (title.toLowerCase().contains(pTitle.toLowerCase())
+					&& artist.toLowerCase().contains(pArtist.toLowerCase())) {
+				potentialMismatches.add(song);
+				return uri;
 			}
+
 //			} else {
 //				unmatchedSongs.add(song);
 //				break;
@@ -199,7 +226,7 @@ public class SpotifyConverter extends Converter {
 //			System.out.print(artist + " ");
 //			System.out.println("ID: " + uri);
 		}
-
+		unmatchedSongs.add(song);
 		return "";
 	}
 
@@ -208,22 +235,21 @@ public class SpotifyConverter extends Converter {
 		if (title.contains("feat.") || title.contains("with")) {
 			tags.add(Tag.FEATURE);
 		}
-		
+
 		if (title.contains("remix")) {
 			tags.add(Tag.REMIX);
 		}
-		
+
 		if (title.contains("remaster")) {
 			tags.add(Tag.REMASTERED);
 		}
-		
+
 		if (title.contains("acoustic") || title.contains("stripped")) {
 			tags.add(Tag.ACOUSTIC);
 		}
-		
+
 		return tags;
 	}
-
 
 	public static String createPlaylist(String playlistName) throws IOException {
 		String userId = getUserId();
@@ -340,6 +366,9 @@ public class SpotifyConverter extends Converter {
 		for (Song s : potentialMismatches) {
 			System.out.println(s.toString());
 		}
+
+		System.out.println();
+		System.out.println();
 		System.out.println("Unmatched:");
 		for (Song s : unmatchedSongs) {
 			System.out.println(s.toString());
@@ -367,9 +396,11 @@ public class SpotifyConverter extends Converter {
 		// authenticate();
 		// copyPlaylist("7xAQ6VoGM9pd5HHEccRGKP");
 //		getSongs("https://open.spotify.com/playlist/0MMPezm4ZGpLDVxXVtvPnT?si=Aq2IVdoQRaGrDkzOcOciuw");
-		getSongs("https://open.spotify.com/playlist/4CdlrNNLa2QLE110RzwCqL?si=3-cgkvFmTa-BkcpJ0auqaQ");
-		printSongs();
-
+		
+//		getSongs("https://open.spotify.com/playlist/4CdlrNNLa2QLE110RzwCqL?si=3-cgkvFmTa-BkcpJ0auqaQ");
+//		printSongs();
+		authenticate();
+		System.out.println(searchSong("Freedom", "Kygo & Zak Abel"));
 	}
 
 }
