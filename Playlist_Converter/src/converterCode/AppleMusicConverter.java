@@ -1,6 +1,5 @@
 package converterCode;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -17,10 +17,8 @@ import org.json.JSONObject;
 public class AppleMusicConverter extends Converter {
 	static String playlistId;
 
-
 	static String auth;
 
-	
 	public static void authenticate() throws IOException {
 
 	}
@@ -55,131 +53,85 @@ public class AppleMusicConverter extends Converter {
 		return null;
 	}
 
-
 	private static void getSongsSpotify(String playlistId) throws IOException {
-	
+
 	}
 
-
-
-//	private static String putSongsApple() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	private static String putSongsGoogle() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	private static String putSongsSpotify() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-	private static String getUserId() throws IOException {
-		String testurl = "https://api.spotify.com/v1/me";
-
-		URL testURL = new URL(testurl);
-		HttpURLConnection con = (HttpURLConnection) testURL.openConnection();
-		con.setRequestProperty("Authorization", "Bearer " + auth);
-		con.setRequestProperty("Content-Type", "application/json");
-		con.setRequestMethod("GET");
-
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer content = new StringBuffer();
-		while ((inputLine = in.readLine()) != null) {
-			content.append(inputLine);
-		}
-
-		JSONObject obj = new JSONObject(content.toString());
-		return obj.getString("id");
-	}
 
 	public static String findSong(String pTitle, String pArtist) throws IOException {
-		String jsonString = searchSong(pTitle, pArtist);
-		JSONObject obj = new JSONObject(jsonString);
-		JSONObject tracks = obj.getJSONObject("tracks");
-		JSONArray songs = tracks.getJSONArray("items");
-		// System.out.println(songs.length());
-		String title = "";
-		String artist = "";
-		String uri = "";
+		Process p = Runtime.getRuntime()
+				.exec("python -c \"from Python_Test.AppleMusicConverter import findSong; findSong(\'"
+						+ pTitle.replace("'", "\\\'") + "\', \'" + pArtist.replace("'", "\\\'") + "\', \'" + "None"
+						+ "\')\"");
 
-		for (int i = 0; i < songs.length(); i++) {
-			artist = songs.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
-			title = songs.getJSONObject(i).getString("name");
-//			songId = songs.getJSONObject(i).getString("id");
-			uri = songs.getJSONObject(i).getString("uri");
+		String s = null;
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-			if (pTitle.equalsIgnoreCase(title) && pArtist.equalsIgnoreCase(artist)) {
-				return uri;
-			}
-
-//			System.out.print(title + "by ");
-//			System.out.print(artist + " ");
-//			System.out.println("ID: " + uri);
+		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+//
+//		// read the output from the command
+//		System.out.println("Here is the standard output of the command:");
+		while ((s = stdInput.readLine()) != null) {
+//			System.out.println(s);
+			return s;
 		}
 
+//		// read any errors from the attempted command
+//		System.out.println("\nHere is the standard error of the command (if any):");
+//		while ((s = stdError.readLine()) != null) {
+//			System.out.println(s);
+//		}
 		return "";
 	}
 
-	public static String createPlaylist() throws IOException {
-		String userId = getUserId();
+	public static String createPlaylist(String playlistName) throws IOException {
+		Process p = Runtime.getRuntime()
+				.exec("python -c \"from Python_Test.AppleMusicConverter import createPlaylist; createPlaylist(\'"
+						+ playlistName + "\')\"");
 
-		String endpoint = "https://api.spotify.com/v1/users/" + userId + "/playlists";
+		String s = null;
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-		URL url = new URL(endpoint);
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setRequestMethod("POST");
-		con.setRequestProperty("Authorization", "Bearer " + auth);
-		con.setRequestProperty("Content-Type", "application/json");
-		JSONObject body = new JSONObject();
-		body.put("name", "Copied playlist");
-		body.put("description", "copied existing spotify playlist to test functionality");
-		body.put("public", false);
-		con.setDoOutput(true);
-		con.setRequestProperty("Content-Length", Integer.toString(body.length()));
-		con.getOutputStream().write(body.toString().getBytes("UTF8"));
+		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer content = new StringBuffer();
-		while ((inputLine = in.readLine()) != null) {
-			content.append(inputLine);
+		// read the output from the command
+		System.out.println("Here is the standard output of the command:");
+		while ((s = stdInput.readLine()) != null) {
+			System.out.println("PLAYLIST ID: " + s);
+			playlistId = s;
 		}
 
-		// System.out.println(content);
-		JSONObject obj = new JSONObject(content.toString());
-		playlistId = obj.getString("id");
-		return playlistId;
+		// read any errors from the attempted command
+//		System.out.println("\nHere is the standard error of the command (if any):");
+//		while ((s = stdError.readLine()) != null) {
+//			System.out.println(s);
+//		}
+		return "https://music.apple.com/library/playlist/" + playlistId;
 	}
 
 	public static void addSongs(ArrayList<String> uris) throws IOException {
-		String endpoint = "https://api.spotify.com/v1/playlists/" + playlistId + "/tracks?uris=";
+		for (String songId : uris) {
+			Process p = Runtime.getRuntime()
+					.exec("python -c \"from Python_Test.AppleMusicConverter import addSong; addSong(\'" + playlistId
+							+ "\', \'" + songId + "\')\"");
 
-		endpoint += uris.toString();
-		endpoint = endpoint.replace("[", "").replace("]", "").replace(" ", "");
+			String s = null;
+			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-//		System.out.println(endpoint);
-		URL url = new URL(endpoint);
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		// con.setRequestMethod("POST");
-		con.setRequestProperty("Authorization", "Bearer " + auth);
-		con.setRequestProperty("Content-Type", "application/json");
-		con.setDoOutput(true);
-		con.setRequestProperty("Content-Length", Integer.toString(0));
-		con.getOutputStream().write(("").getBytes("UTF8"));
+			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
-		String inputLine;
-		StringBuffer content = new StringBuffer();
-		while ((inputLine = in.readLine()) != null) {
-			content.append(inputLine);
+			// read the output from the command
+//			System.out.println("Here is the standard output of the command:");
+//			while ((s = stdInput.readLine()) != null) {
+//				System.out.println(s);
+//			}
+
+			// read any errors from the attempted command
+//			System.out.println("\nHere is the standard error of the command (if any):");
+//			while ((s = stdError.readLine()) != null) {
+//				System.out.println(s);
+//			}
 		}
-
-		// System.out.println(content);
 	}
 
 	public static void copyPlaylist(String url) throws IOException {
@@ -188,7 +140,6 @@ public class AppleMusicConverter extends Converter {
 //			System.out.println(s.name + " " + s.artist);
 //		}
 
-		createPlaylist();
 		ArrayList<String> uris = new ArrayList<String>();
 		// System.out.println("ID: " + playlistId);
 		int counter = 0;
@@ -204,10 +155,11 @@ public class AppleMusicConverter extends Converter {
 		addSongs(uris);
 		System.out.println("DONE");
 	}
-	
+
 	public static void getAllSongs(String id) throws IOException {
-		Process p = Runtime.getRuntime().exec("python -c \"from Python_Test.AppleMusicConverter import getAllSongs; getAllSongs(\'" + id + "\')\"");
-		
+		Process p = Runtime.getRuntime().exec(
+				"python -c \"from Python_Test.AppleMusicConverter import getAllSongs; getAllSongs(\'" + id + "\')\"");
+
 		String s = null;
 		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
@@ -217,12 +169,12 @@ public class AppleMusicConverter extends Converter {
 //		System.out.println("Here is the standard output of the command:");
 		while ((s = stdInput.readLine()) != null) {
 //			System.out.println(s);
-			
+
 			String[] songInfo = s.split(", ");
 			songs.add(new Song(songInfo[0], songInfo[1]));
 			s = null;
 		}
-		
+		System.out.println(songs.size());
 		// read any errors from the attempted command
 //		System.out.println("\nHere is the standard error of the command (if any):");
 //		while ((s = stdError.readLine()) != null) {
@@ -230,10 +182,69 @@ public class AppleMusicConverter extends Converter {
 //		}
 	}
 
+	public static String putAllSongs(String name) throws IOException {
+		authenticate();
+
+		String playlistLink = createPlaylist(name);
+
+		ArrayList<String> uris = new ArrayList<String>();
+		// System.out.println("ID: " + playlistId);
+		int counter = 0;
+		int count = 0;
+		for (Song s : songs) {
+//			System.out.println(s.toString());
+			String searchResult = findSong(s.name, s.artist);
+//			System.out.println(searchResult);
+			if (!searchResult.equals("")) {
+				uris.add(searchResult);
+				counter++;
+				count++;
+			} else {
+//				System.out.println(s.toString());
+			}
+
+			if (counter == 50) {
+				addSongs(uris);
+				uris.clear();
+				counter = 0;
+			}
+
+		}
+//		System.out.println(uris.toString());
+//		System.out.println(uris.size());
+		addSongs(uris);
+		System.out.println("Attempted: " + songs.size());
+		System.out.println("Added: " + count);
+//
+//		System.out.println("Mismatches:");
+//		for (Song s : potentialMismatches) {
+//			System.out.println(s.toString());
+//		}
+//
+//		System.out.println();
+//		System.out.println();
+//		System.out.println("Unmatched:");
+//		for (Song s : unmatchedSongs) {
+//			System.out.println(s.toString());
+//		}
+		return playlistLink;
+	}
+
+	private static String findSong(Song s) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public static void main(String[] args) throws IOException {
-		getAllSongs("https://music.apple.com/ca/playlist/summer-2019/pl.u-PDb40YATLAz4XN");
-		printSongs();
+//		getAllSongs("https://music.apple.com/ca/playlist/summer-2019/pl.u-PDb40YATLAz4XN");
+//		printSongs();
+//		System.out.println(createPlaylist("a"));
+		findSong("I think I'm Okay", "Machine Gun Kelly");
+		playlistId = "p.pmrABA2U2LV5Kg";
+		String[] list = { "1273354311", "1273354311", "1273354311" };
+		ArrayList<String> uris = new ArrayList<>(Arrays.asList(list));
+
+		addSongs(uris);
 	}
 
 }
-

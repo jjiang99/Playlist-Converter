@@ -65,6 +65,10 @@ public class Song {
 		} 
 		return "Name: " + name + "\t\tArtist: " + artist + "\t\tAlbum: " + album;
 	}
+	
+	public String format() {
+		return name + ", " + artist;
+	}
 
 	public static void main(String[] args) throws IOException {
 //		try (PythonInterpreter pyInterp = new PythonInterpreter()) {

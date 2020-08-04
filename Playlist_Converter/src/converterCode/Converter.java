@@ -14,7 +14,7 @@ public class Converter {
 	private static Service sourceService;
 	private static Service destinationService;
 	static String auth = "BQDvG8Y47e31-rBTlzxFSRA9aGbBaoKS1p3fFy3YuJdHgU8XltSMLXOK3FG-MfLYx1a1ZcTE0foMQkuNQxrIvJKZAvt9svKafcaEfyDSnsSmak0T7nAxtxTXtDi1IT-eOl4yP2s6SJbYUhKeJT7mPp-UWJ-qx-ga0a-h0FXbI0W4osZU6sZ3SXQOd6GJD9yQby6kCg";
-
+	
 	public static Service getSourceService() {
 		return sourceService;
 	}
@@ -33,16 +33,6 @@ public class Converter {
 
 	public static void setAuth(String auth) {
 		Converter.auth = auth;
-	}
-
-	private static void getSongsApple(String id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void getSongsGoogle(String id) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public static void printSongs() {
@@ -65,46 +55,81 @@ public class Converter {
 		return resultString.length() > 0 ? resultString.substring(0, resultString.length() - 1) : resultString;
 	}
 
-	public static void authenticate() throws IOException {
-
-	}
-
-	public static void getAllSongs(String id) throws IOException {
+	public static void getAllSongs(String link) throws IOException {
 		switch (sourceService) {
 		case SPOTIFY:
-			SpotifyConverter.getSongs(id);
+			SpotifyConverter.getAllSongs(link);
 		case GOOGLE:
-			getSongsGoogle(id);
+//			GooglePlayConverter.getAllSongs();
 		case APPLE:
-			getSongsApple(id);
+			AppleMusicConverter.getAllSongs(link);
 		}
 	}
 
-	public static String putAllSongs() throws IOException {
+	public static String putAllSongs(String name) throws IOException {
 		switch (destinationService) {
 		case SPOTIFY:
-			return putSongsSpotify();
+			return SpotifyConverter.putAllSongs(name);
 		case GOOGLE:
-			return putSongsGoogle();
+			return null;
+//			return GooglePlayConverter.putAllSongs(name);
 		case APPLE:
-			return putSongsApple();
+			return AppleMusicConverter.putAllSongs(name);
 		}
-		return null;
+		return name;
 	}
 
-	private static String putSongsApple() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	private static String putSongsGoogle() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	private static void convertList() throws IOException {
+//		for (Song s : songs) {
+//			String tmp = "python -c \"from Python_Test.AppleMusicConverter import convertList; convertList(\'"
+//					+ s.name.replace("'", "\\\'") + "\', \'" + s.artist + "\')\"";
+//			System.out.println(tmp);
+//			Process p = Runtime.getRuntime().exec(tmp);
+//			String str = null;
+//			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//
+//			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+//
+//			// read the output from the command
+//			System.out.println("Here is the standard output of the command:");
+//			while ((str = stdInput.readLine()) != null) {
+//				System.out.println(str);
+//			}
+//
+//			// read any errors from the attempted command
+////			System.out.println("\nHere is the standard error of the command (if any):");
+////			while ((str = stdError.readLine()) != null) {
+////				System.out.println(str);
+////			}
+//		}
+//	}
 
-	private static String putSongsSpotify() {
-		// TODO Auto-generated method stub
-		return null;
+//	private static void printPythonSongs() throws IOException {
+//		Process p = Runtime.getRuntime()
+//				.exec("python -c \"from Python_Test.AppleMusicConverter import printSongs; printSongs()\"");
+//		String str = null;
+//		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//
+//		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+//
+//		// read the output from the command
+//		System.out.println("Here is the standard output of the command:");
+//		while ((str = stdInput.readLine()) != null) {
+//			System.out.println(str);
+//		}
+//
+//		// read any errors from the attempted command
+//		System.out.println("\nHere is the standard error of the command (if any):");
+//		while ((str = stdError.readLine()) != null) {
+//			System.out.println(str);
+//		}
+//
+//	}
+	
+	public static String convert(String link, String name) throws IOException {
+		getAllSongs(link);
+		return putAllSongs(name);
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -125,9 +150,19 @@ public class Converter {
 //		searchSong("Jackie Chan", "Tiësto");
 //		SpotifyConverter.authenticate();
 //		GooglePlayConverter.getAllSongs();
-		AppleMusicConverter.getAllSongs("https://music.apple.com/ca/playlist/summer-2020/pl.u-b3b8RX7syNGrgR");
+		SpotifyConverter.getAllSongs("https://open.spotify.com/playlist/087Qsv7zTq8cbDu4bocMy8?si=JKOh1ANTRZy4K11KohKlWg");
+		
+		
+//		System.out.println(songs.size());
+//		SpotifyConverter.putAllSongs("GOOG-SPOT CONVERT");
+		AppleMusicConverter.putAllSongs("SPOT-APPLE CONVERT TEST");
+//		convertList();
+		// AppleMusicConverter.getAllSongs("https://music.apple.com/ca/playlist/summer-2020/pl.u-b3b8RX7syNGrgR");
+//		printSongs();
 //		//GooglePlayConverter.printSongs();
-		System.out.println(SpotifyConverter.putAllSongs("Copy From Apple"));
+//		System.out.println(SpotifyConverter.putAllSongs("Copy From Apple"));
+		
+		
 	}
 
 }

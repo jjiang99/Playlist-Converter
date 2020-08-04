@@ -2,7 +2,7 @@ import spotipy
 import spotipy.util as util
 
 PORT_NUMBER = 8080
-username = "li7jnekrsvk7c9a7508eic6rw" #Janek 
+# username = "li7jnekrsvk7c9a7508eic6rw" #Janek 
 # username = "repthecave"  #Alan
 SPOTIPY_CLIENT_ID = '1f70624ac6c84c93a95998e8d1f5ba98'
 SPOTIPY_CLIENT_SECRET = '66194225c1e6478eb181fe569215059d'
@@ -12,7 +12,7 @@ SCOPE = 'playlist-modify-private'
 
 
 
-def main():
+def authenticate(username):
     token = util.prompt_for_user_token(username, SCOPE, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI)
     print(token)
     if token:
@@ -24,4 +24,3 @@ def main():
     else:
         print("Can't get token for", username)
 
-main()

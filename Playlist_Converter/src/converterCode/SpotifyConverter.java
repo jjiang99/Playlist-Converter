@@ -15,8 +15,8 @@ import org.json.JSONObject;
 
 public class SpotifyConverter extends Converter {
 	static String playlistId;
-	static String auth = "BQBSvxgPfWOMZ7-WJ1USdj0tboKJJZ2SyLFF9gl6UO2bcV7qTN1Q3YHuI251rUnYYMrtk8R30bIAGgRuaVUyOFlcRVW0jBnHh47Ep1HvSBu3Q1KbJvGHqQEgvMDVTDXLIS9T28zA0qQZBVaOvsT0rrrmnEZD9s4n7YeVCfV_T6Kf3OZXfg";
-
+	static String auth = "";
+	static String username = "";
 	public static void printSongs() {
 		for (Song s : songs) {
 			System.out.println(s.toString());
@@ -37,11 +37,10 @@ public class SpotifyConverter extends Converter {
 		return resultString.length() > 0 ? resultString.substring(0, resultString.length() - 1) : resultString;
 	}
 
-	public static void authenticate() throws IOException {
-//		System.out.println("AUTH");
+	public static void authenticate(String username) throws IOException {
 		String s = null;
-		String path = "Python_Test\\spotifyAuthenticator.py";
-		Process p = Runtime.getRuntime().exec("python " + path);
+		
+		Process p = Runtime.getRuntime().exec("python -c \"from Python_Test.spotifyAuthenticator import authenticate; authenticate(\'" + username + "\')");
 		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
 		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -90,9 +89,9 @@ public class SpotifyConverter extends Converter {
 		return content.toString();
 	}
 
-	public static void getSongs(String link) throws IOException {
+	public static void getAllSongs(String link) throws IOException {
 		playlistId = (link.split("playlist/")[1]).split("\\?")[0];
-		authenticate();
+
 		String endpoint = "https://api.spotify.com/v1/playlists/" + playlistId + "/tracks";
 
 		URL url = new URL(endpoint);
@@ -190,7 +189,7 @@ public class SpotifyConverter extends Converter {
 //			songId = songs.getJSONObject(i).getString("id");
 			uri = searchResults.getJSONObject(i).getString("uri");
 
-			System.out.println("Query Title: " + pTitle + ", Search: " + title + " Query Artist: " + pArtist + ", " + "Search: " + artist);
+//			System.out.println("Query Title: " + pTitle + ", Search: " + title + " Query Artist: " + pArtist + ", " + "Search: " + artist);
 			if (pTitle.equalsIgnoreCase(title) && pArtist.equalsIgnoreCase(artist)) {
 				return uri;
 			} else if (pTitle.toLowerCase().contains(title.toLowerCase()) && pArtist.equalsIgnoreCase(artist)) {
@@ -309,7 +308,7 @@ public class SpotifyConverter extends Converter {
 	}
 
 	public static void copyPlaylist(String url) throws IOException {
-		getSongs(url);
+		getAllSongs(url);
 //		for (Song s : songs) {
 //			System.out.println(s.name + " " + s.artist);
 //		}
@@ -332,7 +331,7 @@ public class SpotifyConverter extends Converter {
 	}
 
 	public static String putAllSongs(String name) throws IOException {
-		authenticate();
+		authenticate(username);
 
 		String playlistLink = createPlaylist(name);
 
@@ -358,6 +357,8 @@ public class SpotifyConverter extends Converter {
 			}
 
 		}
+		System.out.println(uris.toString());
+		System.out.println(uris.size());
 		addSongs(uris);
 		System.out.println("Attempted: " + songs.size());
 		System.out.println("Added: " + count);
@@ -399,8 +400,10 @@ public class SpotifyConverter extends Converter {
 		
 //		getSongs("https://open.spotify.com/playlist/4CdlrNNLa2QLE110RzwCqL?si=3-cgkvFmTa-BkcpJ0auqaQ");
 //		printSongs();
-		authenticate();
-		System.out.println(searchSong("Freedom", "Kygo & Zak Abel"));
+		username = "repthecave";
+		authenticate(username);
+		System.out.println(auth);
+//		System.out.println(searchSong("Freedom", "Kygo & Zak Abel"));
 	}
 
 }

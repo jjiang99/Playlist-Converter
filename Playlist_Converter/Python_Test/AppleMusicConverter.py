@@ -31,13 +31,13 @@ payload = {
 token = jwt.encode(payload, secret, algorithm=alg, headers=headers)
 token_str = token.decode()
 
-
-playlistId = ''
-
-
+playlistIdentifier = ''
+songList = []
+potentialMismatches = []
 
 
 class Song:
+
     def __init__(self, name, artist, album):
         self.name = name
         self.artist = artist
@@ -46,24 +46,30 @@ class Song:
     def printHello(self):
         print("hello")
     
+    def __str__(self):
+        return self.name + ", " + self.artist
+
     
-def authenticateUser(): # Only need to run this once on a given machine, credentials written in text file
+def authenticateUser():  # Only need to run this once on a given machine, credentials written in text file
     return
+
 
 def hello():
     print("Hello World!")
+
     
 def getAllSongs(link):
     playlistId = link.split("/")[-1]
 #     print(playlistId)
     url = "https://api.music.apple.com/v1/catalog/us/playlists/" + playlistId
-    res = requests.get(url, headers={'Authorization': "Bearer " +  token_str})
+    res = requests.get(url, headers={'Authorization': "Bearer " + token_str})
     
 #     print(json.loads(res.text))
     result = json.loads(res.text)
-    
+#     print(str(result).encode("utf-8"))
 #     print(result['data'][0]['relationships']['tracks']['data'][0]['attributes']['name'])
     songs = []
+#     print(result['data'][0]['relationships']['tracks']['data'])
     for track in result['data'][0]['relationships']['tracks']['data']:
 #         print(track['attributes']['albumName'])
 #         if (track['attributes']['name'] != None):
@@ -71,26 +77,45 @@ def getAllSongs(link):
         if ("feat." in title):
             title = title.split("feat.")[0][0:-2]
         songs.append(Song(title, str(track['attributes']['artistName']).split(" &")[0], track['attributes']['albumName']))
-        
 
     for song in songs:
         print(song.name + ", " + song.artist)
+#     print(len(songs))
     return "DONE"
 
-def createPlaylist(playlistName, description=None):
-    url = "https://api.music.apple.com/v1/me/library/playlists"
-    res = requests.post(url, headers={'Authorization': "Bearer " +  token_str, 'Music-User-Token': userToken}, json={'attributes': {'name': playlistName, 'description': description}})
-    result = json.loads(res.text)
 
-    playlistId = result['data'][0]['id']
-    return "https://music.apple.com/library/playlist/" + playlistId
+def getLibSongs(link):
+    playlistId = link.split("/")[-1]
+    url = "https://api.music.apple.com/v1/me/library/playlists/" + playlistId
+    res = requests.get(url, headers={'Authorization': "Bearer " + token_str, 'Music-User-Token': userToken})
+    
+    result = json.loads(res.text)
+    print(str(result).encode("utf-8"))
+    songs = []        
+
+    for song in songs:
+        print(song.name + ", " + song.artist)
+    print(len(songs))
+    return "DONE"
+
+
+def createPlaylist(playlistName, description=""):
+    url = "https://api.music.apple.com/v1/me/library/playlists"
+    res = requests.post(url, headers={'Authorization': "Bearer " + token_str, 'Music-User-Token': userToken}, json={'attributes': {'name': playlistName, 'description': description}})
+    result = json.loads(res.text)
+#     print(result)
+    global playlistIdentifier
+    playlistIdentifier = result['data'][0]['id']
+    print(playlistIdentifier)
+    return "https://music.apple.com/library/playlist/" + playlistIdentifier
+
     
 def searchSong(name, artist, album):
 #     https://api.music.apple.com/v1/catalog/{storefront}/search .encode("utf-8")
 
     url = "https://api.music.apple.com/v1/catalog/us/search?term=" + name.replace(" ", "+") + "+" + artist.replace(" ", "+") + "&types=songs"
     # print (f"curl -v -H 'Authorization: Bearer {token_str}' {url}")
-    res = requests.get(url, headers={'Authorization': "Bearer " +  token_str})
+    res = requests.get(url, headers={'Authorization': "Bearer " + token_str})
     if res == None or res == '':
         print("none")
         return ""
@@ -99,6 +124,8 @@ def searchSong(name, artist, album):
     
 
 def findSong(pTitle, pArtist, pAlbum):
+    pTitle = pTitle.replace('&', '%26')
+    pArtist = pArtist.replace('&', '%26')
     result = searchSong(str(pTitle), str(pArtist), str(pAlbum))
 #     print(result)
     for item in result['results']['songs']['data']:
@@ -106,30 +133,127 @@ def findSong(pTitle, pArtist, pAlbum):
         artist = item['attributes']['artistName']
         songId = item['attributes']['playParams']['id']
         if (pTitle.lower() == title.lower() and pArtist.lower() == artist.lower()):
+            print(songId)
             return songId
+        elif pTitle.lower() in title.lower() and pArtist.lower() == artist.lower():
+            potentialMismatches.append(Song(pTitle, pArtist, pAlbum))
+            print(songId)
+            return songId;
+        elif (title.lower() in pTitle.lower() and pArtist.lower() == artist.lower()):
+            potentialMismatches.append(Song(pTitle, pArtist, pAlbum))
+            print(songId)
+            return songId;
+        elif (pTitle.lower() in title.lower() and pArtist.lower() in artist.lower()):
+            potentialMismatches.append(Song(pTitle, pArtist, pAlbum))
+            print(songId)
+            return songId;
+        elif (title.lower() in pTitle.lower() and pArtist.lower() in artist.lower()):
+            potentialMismatches.append(Song(pTitle, pArtist, pAlbum))
+            print(songId)
+            return songId;
+        elif (pTitle.lower() in title.lower() and artist.lower() in pArtist.lower()):
+            potentialMismatches.append(Song(pTitle, pArtist, pAlbum))
+            print(songId)
+            return songId;
+        elif (title.lower() in pTitle.lower() and artist.lower() in pArtist.lower()):
+            potentialMismatches.append(Song(pTitle, pArtist, pAlbum))
+            print(songId)
+            return songId;
+    
+    print("")
+    return ""
+
     
 def addSongs(songIds):
-    url = "https://api.music.apple.com/v1/me/library/playlists/" + playlistId + "/tracks"
+    url = "https://api.music.apple.com/v1/me/library/playlists/" + playlistIdentifier + "/tracks"
+#     print("PID: " + playlistIdentifier)
     tracks = []
     for id in songIds:
         tracks.append({'id': id, 'type': 'songs'})
     
-    requests.post(url, headers={'Authorization': "Bearer " +  token_str, 'Music-User-Token': userToken}, json={'data': tracks})
+    res = requests.post(url, headers={'Authorization': "Bearer " + token_str, 'Music-User-Token': userToken}, json={'data': tracks})
+#     print(res)
     return
 
 
-def putAllSongs():
+def addSong(playlistId, songId):
+    url = "https://api.music.apple.com/v1/me/library/playlists/" + playlistId + "/tracks"
+    print("PID: " + playlistId)
+    tracks = []
+    tracks.append({'id': songId, 'type': 'songs'})
+    res = requests.post(url, headers={'Authorization': "Bearer " + token_str, 'Music-User-Token': userToken}, json={'data': tracks})
+    print(res)
     return
 
+
+def authenticate():
+    return
+
+
+def convertList(title, artist):
+    print(title + ", " + artist)
+    songList.append(Song(title, artist, ""))
+    return
+
+
+def printSongs():
+    print("print songs")
+    for song in songList:
+        print(song.__str__())
+    return
+
+
+def putAllSongs(playlistName):
+    authenticate()
+    link = createPlaylist(playlistName)
+    
+    songIds = []
+    
+    counter = 0
+    count = 0
+    
+    for song in songList:
+        searchResult = findSong(song.name, song.artist, song.album)
+#         print(searchResult)
+        if searchResult != "":
+            songIds.append(searchResult)
+            counter += 1
+            count += 1
+        else:
+            print("NO MATCH")
+            
+        if counter == 50:
+            addSongs(songIds)
+            songIds.clear()
+            counter = 0
+        
+    print(songIds)
+    addSongs(songIds)
+    return link
 
 # if __name__ == "__main__":
     
-# print(findSong("come back to me (feat. Shaylen)", "Chantel Jeffries", "asdas"))        
-#     songs = ['1373516907', '1373516907', '1373516907', '1373516907']
+# print(findSong("come back to me (feat. Shaylen)", "Chantel Jeffries", "asdas")) 
+# createPlaylist("adam stinks 123")       
+# songs = ['1373516907', '1373516907']
      
-#     addSongs(songs)
+# addSongs(songs)
 #     getAllSongs("https://music.apple.com/ca/playlist/summer-2019/pl.u-PDb40YATLAz4XN")
-getAllSongs("https://music.apple.com/ca/playlist/summer-2020/pl.u-b3b8RX7syNGrgR")
+# getAllSongs("https://music.apple.com/ca/playlist/veld-2020/pl.u-vxy6k1XFzoRJmy")
+# getLibSongs("https://music.apple.com/ca/playlist/veld-2020/p.YJXV9PaCRqrVNJ")
 
+# findSong("Money In The Grave (Drake ft. Rick Ross)", "Drake", None)
 
+# s1 = Song("Stay", "Post Malone", None)
+# songList.append(s1)
+# songList.append(s1)
+# songList.append(s1)
+# songList.append(s1)
+# songList.append(s1)
+# convertList("Stay", "Post Malone")
+# printSongs()
+# print(putAllSongs("adam stinks the remix"))
+# convertList("I Think I'm OKAY", "Machine Gun Kelly")
+#     createPlaylist("adam stinks")
+# getAllSongs("https://music.apple.com/ca/playlist/summer-2019/pl.u-PDb40YATLAz4XN")
 

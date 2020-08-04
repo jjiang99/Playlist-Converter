@@ -1,5 +1,6 @@
 package application;
 
+import java.io.IOException;
 import java.net.URL;
 
 import converterCode.Converter;
@@ -31,10 +32,12 @@ public class App extends Application {
 	Scene destinationSelect;
 	Scene serviceSelect;
 	Scene informationInput;
-
+	
 	int width = 500;
 	int height = 500;
 	int standardSpacing = 10;
+	
+	
 
 	public static void main(String[] args) {
 		launch(args);
@@ -45,7 +48,7 @@ public class App extends Application {
 
 		createHomeScene(primaryStage);
 		createOriginSelect(primaryStage);
-		createDestinationSelect(primaryStage);
+//		createDestinationSelect(primaryStage);
 		createInformationInput(primaryStage);
 		createServiceSelect(primaryStage);
 
@@ -204,84 +207,84 @@ public class App extends Application {
 		originSelect = new Scene(root, width, height);
 	}
 
-	public void createDestinationSelect(Stage stage) {
-		Button btn = new Button();
-		btn.setText("Say 'Hello World'");
-
-		Button spotifyButton = new Button();
-		spotifyButton.setText("Spotify");
-		spotifyButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				Converter.setDestinationService(Service.SPOTIFY);
-				stage.setScene(informationInput);
-			}
-		});
-
-		Button appleMusicButton = new Button();
-		appleMusicButton.setText("Apple Music");
-		appleMusicButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				Converter.setDestinationService(Service.APPLE);
-				stage.setScene(informationInput);
-			}
-		});
-
-		Button googlePlayButton = new Button();
-		googlePlayButton.setText("Google Play Music");
-		googlePlayButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				Converter.setDestinationService(Service.GOOGLE);
-				stage.setScene(informationInput);
-			}
-		});
-
-		TextFlow textFlow = new TextFlow();
-		textFlow.getChildren().add(new Text("Select the destination service."));
-		textFlow.setTextAlignment(TextAlignment.CENTER);
-
-		GridPane buttons = new GridPane();
-		buttons.setAlignment(Pos.CENTER);
-		buttons.add(spotifyButton, 0, 0, 1, 1);
-		buttons.add(appleMusicButton, 1, 0, 1, 1);
-		buttons.add(googlePlayButton, 2, 0, 1, 1);
-
-		Button testButton = new Button();
-		testButton.setText("TEST");
-		testButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				System.out.println(Converter.getDestinationService());
-			}
-		});
-
-		Button backButton = new Button();
-		backButton.setText("Back");
-		backButton.setOnAction(e -> stage.setScene(originSelect));
-
-		VBox vbox1 = new VBox(textFlow, buttons, backButton, testButton);
-		vbox1.setAlignment(Pos.CENTER);
-
-		StackPane root = new StackPane();
-		root.getChildren().add(vbox1);
-
-		destinationSelect = new Scene(root, width, height);
-
-	}
+//	public void createDestinationSelect(Stage stage) {
+//		Button btn = new Button();
+//		btn.setText("Say 'Hello World'");
+//
+//		Button spotifyButton = new Button();
+//		spotifyButton.setText("Spotify");
+//		spotifyButton.setOnAction(new EventHandler<ActionEvent>() {
+//
+//			@Override
+//			public void handle(ActionEvent event) {
+//				Converter.setDestinationService(Service.SPOTIFY);
+//				stage.setScene(informationInput);
+//			}
+//		});
+//
+//		Button appleMusicButton = new Button();
+//		appleMusicButton.setText("Apple Music");
+//		appleMusicButton.setOnAction(new EventHandler<ActionEvent>() {
+//
+//			@Override
+//			public void handle(ActionEvent event) {
+//				Converter.setDestinationService(Service.APPLE);
+//				stage.setScene(informationInput);
+//			}
+//		});
+//
+//		Button googlePlayButton = new Button();
+//		googlePlayButton.setText("Google Play Music");
+//		googlePlayButton.setOnAction(new EventHandler<ActionEvent>() {
+//
+//			@Override
+//			public void handle(ActionEvent event) {
+//				Converter.setDestinationService(Service.GOOGLE);
+//				stage.setScene(informationInput);
+//			}
+//		});
+//
+//		TextFlow textFlow = new TextFlow();
+//		textFlow.getChildren().add(new Text("Select the destination service."));
+//		textFlow.setTextAlignment(TextAlignment.CENTER);
+//
+//		GridPane buttons = new GridPane();
+//		buttons.setAlignment(Pos.CENTER);
+//		buttons.add(spotifyButton, 0, 0, 1, 1);
+//		buttons.add(appleMusicButton, 1, 0, 1, 1);
+//		buttons.add(googlePlayButton, 2, 0, 1, 1);
+//
+//		Button testButton = new Button();
+//		testButton.setText("TEST");
+//		testButton.setOnAction(new EventHandler<ActionEvent>() {
+//
+//			@Override
+//			public void handle(ActionEvent event) {
+//				System.out.println(Converter.getDestinationService());
+//			}
+//		});
+//
+//		Button backButton = new Button();
+//		backButton.setText("Back");
+//		backButton.setOnAction(e -> stage.setScene(originSelect));
+//
+//		VBox vbox1 = new VBox(textFlow, buttons, backButton, testButton);
+//		vbox1.setAlignment(Pos.CENTER);
+//
+//		StackPane root = new StackPane();
+//		root.getChildren().add(vbox1);
+//
+//		destinationSelect = new Scene(root, width, height);
+//
+//	}
 
 	public void createServiceSelect(Stage stage) {
 		VBox root = new VBox();
 		root.setAlignment(Pos.CENTER);
-		
+
 		HBox serviceSelection = new HBox();
 		serviceSelection.setAlignment(Pos.CENTER);
-		
+
 		ToggleGroup originGroup = new ToggleGroup();
 		ToggleButton spotifyButtonLeft = new ToggleButton("Spotify");
 		ToggleButton appleMusicButtonLeft = new ToggleButton("Apple Music");
@@ -290,11 +293,11 @@ public class App extends Application {
 		spotifyButtonLeft.setToggleGroup(originGroup);
 		appleMusicButtonLeft.setToggleGroup(originGroup);
 		googlePlayButtonLeft.setToggleGroup(originGroup);
-		
+
 		spotifyButtonLeft.setMinWidth(120);
 		appleMusicButtonLeft.setMinWidth(120);
 		googlePlayButtonLeft.setMinWidth(120);
-		
+
 		ToggleGroup destinationGroup = new ToggleGroup();
 		ToggleButton spotifyButtonRight = new ToggleButton("Spotify");
 		ToggleButton appleMusicButtonRight = new ToggleButton("Apple Music");
@@ -303,7 +306,7 @@ public class App extends Application {
 		spotifyButtonRight.setToggleGroup(destinationGroup);
 		appleMusicButtonRight.setToggleGroup(destinationGroup);
 		googlePlayButtonRight.setToggleGroup(destinationGroup);
-		
+
 		spotifyButtonRight.setMinWidth(120);
 		appleMusicButtonRight.setMinWidth(120);
 		googlePlayButtonRight.setMinWidth(120);
@@ -320,15 +323,39 @@ public class App extends Application {
 		Button backButton = new Button();
 		backButton.setText("Back");
 		backButton.setOnAction(e -> stage.setScene(homeScene));
-		
+
 		Button nextButton = new Button();
 		nextButton.setText("Next");
-		nextButton.setOnAction(e -> stage.setScene(informationInput));
+		nextButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				if (spotifyButtonLeft.isSelected()) {
+					Converter.setSourceService(Service.SPOTIFY);
+				} else if (appleMusicButtonLeft.isSelected()) {
+					Converter.setSourceService(Service.APPLE);
+				} else if (googlePlayButtonLeft.isSelected()) {
+					Converter.setSourceService(Service.GOOGLE);
+				}
+				
+				if (spotifyButtonRight.isSelected()) {
+					Converter.setDestinationService(Service.SPOTIFY);
+				} else if (appleMusicButtonRight.isSelected()) {
+					Converter.setDestinationService(Service.APPLE);
+				} else if (googlePlayButtonRight.isSelected()) {
+					Converter.setDestinationService(Service.GOOGLE);
+				}
+				
+				System.out.println(Converter.getSourceService());
+				System.out.println(Converter.getDestinationService());
+				stage.setScene(informationInput);
+			}
+		});
 		
 		HBox navigationButtons = new HBox(backButton, nextButton);
 		navigationButtons.setAlignment(Pos.BASELINE_CENTER);
 		navigationButtons.setSpacing(standardSpacing);
-		
+
 		root.getChildren().addAll(serviceSelection, navigationButtons);
 		root.setSpacing(standardSpacing);
 		// create the scene
@@ -336,7 +363,9 @@ public class App extends Application {
 	}
 
 	public void createInformationInput(Stage stage) {
-		TextField input = new TextField("Enter the playlist link");
+		TextField linkInput = new TextField("Enter the playlist link");
+
+		TextField nameInput = new TextField("Enter name of the new playlist");
 
 		Button enterButton = new Button();
 		enterButton.setText("Enter");
@@ -345,33 +374,38 @@ public class App extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				// System.out.println(input.getText());
-				System.out.println(isValidLink(input.getText()));
-			}
-		});
-
-		input.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent ke) {
-				if (ke.getCode().equals(KeyCode.ENTER)) {
-//					System.out.println(input.getText());
-					System.out.println(isValidLink(input.getText()));
+				try {
+					convert(linkInput.getText(), nameInput.getText());
+					
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		});
-		
+
+//		input.setOnKeyPressed(new EventHandler<KeyEvent>() {
+//			@Override
+//			public void handle(KeyEvent ke) {
+//				if (ke.getCode().equals(KeyCode.ENTER)) {
+////					System.out.println(input.getText());
+//					System.out.println(isValidLink(input.getText()));
+//				}
+//			}
+//		});
+
 		Button backButton = new Button();
 		backButton.setText("Back");
 		backButton.setOnAction(e -> stage.setScene(serviceSelect));
-		
+
 		Button nextButton = new Button();
 		nextButton.setText("Convert!");
 		nextButton.setOnAction(e -> stage.setScene(informationInput));
-		
+
 		HBox navigationButtons = new HBox(backButton, nextButton);
 		navigationButtons.setAlignment(Pos.BASELINE_CENTER);
 		navigationButtons.setSpacing(standardSpacing);
 
-		VBox vbox1 = new VBox(input, enterButton, navigationButtons);
+		VBox vbox1 = new VBox(linkInput, nameInput, enterButton, navigationButtons);
 		vbox1.setAlignment(Pos.CENTER);
 		vbox1.setSpacing(standardSpacing);
 
@@ -394,5 +428,10 @@ public class App extends Application {
 		catch (Exception e) {
 			return false;
 		}
+	}
+
+	public static String convert(String link, String name) throws IOException {
+		Converter.convert(link, name);
+		return link;
 	}
 }
