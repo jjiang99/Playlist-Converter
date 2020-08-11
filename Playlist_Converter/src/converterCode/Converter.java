@@ -155,7 +155,7 @@ public class Converter {
 		
 //		System.out.println(songs.size());
 //		SpotifyConverter.putAllSongs("GOOG-SPOT CONVERT");
-		AppleMusicConverter.putAllSongs("SPOT-APPLE CONVERT TEST");
+		AppleMusicConverter.putAllSongs("asd");
 //		convertList();
 		// AppleMusicConverter.getAllSongs("https://music.apple.com/ca/playlist/summer-2020/pl.u-b3b8RX7syNGrgR");
 //		printSongs();

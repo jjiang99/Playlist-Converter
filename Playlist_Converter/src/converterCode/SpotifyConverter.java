@@ -91,7 +91,10 @@ public class SpotifyConverter extends Converter {
 
 	public static void getAllSongs(String link) throws IOException {
 		playlistId = (link.split("playlist/")[1]).split("\\?")[0];
-
+		
+		if (username.equals("")) {
+			authenticate("li7jnekrsvk7c9a7508eic6rw");
+		}
 		String endpoint = "https://api.spotify.com/v1/playlists/" + playlistId + "/tracks";
 
 		URL url = new URL(endpoint);

@@ -15,8 +15,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -32,12 +30,15 @@ public class App extends Application {
 	Scene destinationSelect;
 	Scene serviceSelect;
 	Scene informationInput;
+	Scene endScreen;
+	Scene spotifyInfoInput;
+	Scene appleInfoInput;
 	
+	String playlistLink;
+
 	int width = 500;
 	int height = 500;
 	int standardSpacing = 10;
-	
-	
 
 	public static void main(String[] args) {
 		launch(args);
@@ -47,78 +48,15 @@ public class App extends Application {
 	public void start(Stage primaryStage) {
 
 		createHomeScene(primaryStage);
-		createOriginSelect(primaryStage);
+//		createOriginSelect(primaryStage);
 //		createDestinationSelect(primaryStage);
 		createInformationInput(primaryStage);
 		createServiceSelect(primaryStage);
+		createEndScreen(primaryStage);
 
 		primaryStage.setScene(homeScene);
 		primaryStage.setTitle("Playlist Converter");
 		primaryStage.show();
-
-//		Button btn = new Button();
-//		btn.setText("Say 'Hello World'");
-//		btn.setOnAction(new EventHandler<ActionEvent>() {
-//
-//			@Override
-//			public void handle(ActionEvent event) {
-//				System.out.println("Hello World!");
-//			}
-//		});
-//
-//		Button spotifyButton = new Button();
-//		spotifyButton.setText("Spotify");
-//		spotifyButton.setOnAction(new EventHandler<ActionEvent>() {
-//
-//			@Override
-//			public void handle(ActionEvent event) {
-//				System.out.println("Hello World!");
-//			}
-//		});
-//
-//		Button appleMusicButton = new Button();
-//		appleMusicButton.setText("Apple Music");
-//		appleMusicButton.setOnAction(new EventHandler<ActionEvent>() {
-//
-//			@Override
-//			public void handle(ActionEvent event) {
-//				System.out.println("Hello World!");
-//			}
-//		});
-//
-//		Button googlePlayButton = new Button();
-//		googlePlayButton.setText("Google Play Music");
-//		googlePlayButton.setOnAction(new EventHandler<ActionEvent>() {
-//
-//			@Override
-//			public void handle(ActionEvent event) {
-//				System.out.println("Hello World!");
-//			}
-//		});
-//		
-//		TextFlow textFlow = new TextFlow();
-//		textFlow.getChildren().add(new Text("Welcome to the Playlist Converter!"));
-//		textFlow.setTextAlignment(TextAlignment.CENTER);
-//		
-//
-//		GridPane buttons = new GridPane();
-//		buttons.setAlignment(Pos.CENTER);
-//		buttons.add(spotifyButton, 0, 0, 1, 1);
-//		buttons.add(appleMusicButton, 1, 0, 1, 1);
-//		buttons.add(googlePlayButton, 2, 0, 1, 1);
-//		
-//		TextField input = new TextField("Enter the playlist link");
-//		
-//		VBox vbox1 = new VBox(textFlow, input, buttons);
-//		vbox1.setAlignment(Pos.TOP_CENTER);
-//
-//		StackPane root = new StackPane();
-//		root.getChildren().add(vbox1);
-////		root.getChildren().add(input);
-////		root.getChildren().add(buttons);
-//		Scene scene = new Scene(root, 500, 500);
-//		primaryStage.setScene(scene);
-//		primaryStage.show();
 	}
 
 	public void createHomeScene(Stage stage) {
@@ -289,7 +227,7 @@ public class App extends Application {
 		ToggleButton spotifyButtonLeft = new ToggleButton("Spotify");
 		ToggleButton appleMusicButtonLeft = new ToggleButton("Apple Music");
 		ToggleButton googlePlayButtonLeft = new ToggleButton("Google Play Music");
-		
+
 		spotifyButtonLeft.setToggleGroup(originGroup);
 		appleMusicButtonLeft.setToggleGroup(originGroup);
 		googlePlayButtonLeft.setToggleGroup(originGroup);
@@ -302,7 +240,7 @@ public class App extends Application {
 		ToggleButton spotifyButtonRight = new ToggleButton("Spotify");
 		ToggleButton appleMusicButtonRight = new ToggleButton("Apple Music");
 		ToggleButton googlePlayButtonRight = new ToggleButton("Google Play Music");
-		
+
 		spotifyButtonRight.setToggleGroup(destinationGroup);
 		appleMusicButtonRight.setToggleGroup(destinationGroup);
 		googlePlayButtonRight.setToggleGroup(destinationGroup);
@@ -310,7 +248,7 @@ public class App extends Application {
 		spotifyButtonRight.setMinWidth(120);
 		appleMusicButtonRight.setMinWidth(120);
 		googlePlayButtonRight.setMinWidth(120);
-		
+
 		VBox originButtons = new VBox(spotifyButtonLeft, appleMusicButtonLeft, googlePlayButtonLeft);
 		VBox destinationButtons = new VBox(spotifyButtonRight, appleMusicButtonRight, googlePlayButtonRight);
 		originButtons.setAlignment(Pos.CENTER);
@@ -319,7 +257,7 @@ public class App extends Application {
 		destinationButtons.setSpacing(standardSpacing);
 		serviceSelection.getChildren().addAll(originButtons, destinationButtons);
 		serviceSelection.setSpacing(50);
-		
+
 		Button backButton = new Button();
 		backButton.setText("Back");
 		backButton.setOnAction(e -> stage.setScene(homeScene));
@@ -337,7 +275,7 @@ public class App extends Application {
 				} else if (googlePlayButtonLeft.isSelected()) {
 					Converter.setSourceService(Service.GOOGLE);
 				}
-				
+
 				if (spotifyButtonRight.isSelected()) {
 					Converter.setDestinationService(Service.SPOTIFY);
 				} else if (appleMusicButtonRight.isSelected()) {
@@ -345,13 +283,13 @@ public class App extends Application {
 				} else if (googlePlayButtonRight.isSelected()) {
 					Converter.setDestinationService(Service.GOOGLE);
 				}
-				
+
 				System.out.println(Converter.getSourceService());
 				System.out.println(Converter.getDestinationService());
 				stage.setScene(informationInput);
 			}
 		});
-		
+
 		HBox navigationButtons = new HBox(backButton, nextButton);
 		navigationButtons.setAlignment(Pos.BASELINE_CENTER);
 		navigationButtons.setSpacing(standardSpacing);
@@ -373,25 +311,14 @@ public class App extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
-				// System.out.println(input.getText());
 				try {
-					convert(linkInput.getText(), nameInput.getText());
-					
+					System.out.println(convert(linkInput.getText(), nameInput.getText()));
+					stage.setScene(endScreen);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		});
-
-//		input.setOnKeyPressed(new EventHandler<KeyEvent>() {
-//			@Override
-//			public void handle(KeyEvent ke) {
-//				if (ke.getCode().equals(KeyCode.ENTER)) {
-////					System.out.println(input.getText());
-//					System.out.println(isValidLink(input.getText()));
-//				}
-//			}
-//		});
 
 		Button backButton = new Button();
 		backButton.setText("Back");
@@ -413,6 +340,57 @@ public class App extends Application {
 		root.getChildren().add(vbox1);
 		informationInput = new Scene(root, width, height);
 	}
+	
+	public void createSpotifyInput(Stage stage) {
+		Label message = new Label("Link: " + playlistLink);
+
+		Button exitButton = new Button();
+		exitButton.setText("Convert!");
+		exitButton.setOnAction(e -> stage.setScene(informationInput));
+
+
+		VBox vbox1 = new VBox(message, exitButton);
+		vbox1.setAlignment(Pos.CENTER);
+		vbox1.setSpacing(standardSpacing);
+
+		StackPane root = new StackPane();
+		root.getChildren().add(vbox1);		
+		spotifyInfoInput = new Scene(root, width, height);
+	}
+
+	public void createAppleInput(Stage stage) {
+		Label message = new Label("Link: " + playlistLink);
+
+		Button exitButton = new Button();
+		exitButton.setText("Convert!");
+		exitButton.setOnAction(e -> stage.setScene(informationInput));
+
+
+		VBox vbox1 = new VBox(message, exitButton);
+		vbox1.setAlignment(Pos.CENTER);
+		vbox1.setSpacing(standardSpacing);
+
+		StackPane root = new StackPane();
+		root.getChildren().add(vbox1);		
+		spotifyInfoInput = new Scene(root, width, height);
+	}
+	
+	public void createEndScreen(Stage stage) {
+		Label message = new Label("Link: " + playlistLink);
+
+		Button exitButton = new Button();
+		exitButton.setText("Convert!");
+		exitButton.setOnAction(e -> stage.setScene(informationInput));
+
+
+		VBox vbox1 = new VBox(message, exitButton);
+		vbox1.setAlignment(Pos.CENTER);
+		vbox1.setSpacing(standardSpacing);
+
+		StackPane root = new StackPane();
+		root.getChildren().add(vbox1);
+		endScreen = new Scene(root, width, height);
+	}
 
 	public TextField getSpotifyPanel() {
 		return new TextField("HELLO");
@@ -431,7 +409,6 @@ public class App extends Application {
 	}
 
 	public static String convert(String link, String name) throws IOException {
-		Converter.convert(link, name);
-		return link;
+		return Converter.convert(link, name);
 	}
 }

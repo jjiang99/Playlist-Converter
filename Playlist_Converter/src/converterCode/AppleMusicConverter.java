@@ -4,15 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class AppleMusicConverter extends Converter {
 	static String playlistId;
@@ -56,7 +51,6 @@ public class AppleMusicConverter extends Converter {
 	private static void getSongsSpotify(String playlistId) throws IOException {
 
 	}
-
 
 	public static String findSong(String pTitle, String pArtist) throws IOException {
 		Process p = Runtime.getRuntime()
@@ -185,7 +179,7 @@ public class AppleMusicConverter extends Converter {
 	public static String putAllSongs(String name) throws IOException {
 		authenticate();
 
-		String playlistLink = createPlaylist(name);
+//		String playlistLink = createPlaylist(name);
 
 		ArrayList<String> uris = new ArrayList<String>();
 		// System.out.println("ID: " + playlistId);
@@ -227,7 +221,7 @@ public class AppleMusicConverter extends Converter {
 //		for (Song s : unmatchedSongs) {
 //			System.out.println(s.toString());
 //		}
-		return playlistLink;
+		return "";
 	}
 
 	private static String findSong(Song s) {
